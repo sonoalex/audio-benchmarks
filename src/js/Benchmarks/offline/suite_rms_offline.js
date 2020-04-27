@@ -1,18 +1,14 @@
-import getFile from '../utils/getFile';
+import getFile from '../../utils/getFile';
 let essentia;
 
-export default function test_rms() {
-    const RMSbutton = document.getElementById('rms');
+export default function rms_offline() {
+    const RMSOffbutton = document.getElementById('rms_offline');
     
     EssentiaModule().then( (EssentiaWasmModule) => {
         essentia = new Essentia(EssentiaWasmModule);
-        // prints version of the essentia wasm backend
-        //console.log(essentia.version)
-        // prints all the available algorithms in essentia.js
-        //console.log(essentia.algorithmNames);
     });
 
-    RMSbutton.addEventListener('click', () => {
+    RMSOffbutton.addEventListener('click', () => {
         const audioContext = new AudioContext();
         const BUFFER_SIZE = 512;
         const BUFFER_SIZE_MEYDA = 512;
@@ -21,7 +17,7 @@ export default function test_rms() {
             const suite = new Benchmark.Suite;
 
             // add tests
-            suite.add('Meyda#RMS', () => {
+            suite.add('Meyda#RMS_OFF', () => {
                 
                 for (let i = 0; i < audioBuffer.length/BUFFER_SIZE_MEYDA; i++) {
                     Meyda.bufferSize = BUFFER_SIZE_MEYDA;
@@ -35,7 +31,7 @@ export default function test_rms() {
 
                     Meyda.extract(['rms'], bufferChunk);   
                 }
-            }).add('Essentia#RMS', () => {        
+            }).add('Essentia#RMS_OFF', () => {        
                 for (let i = 0; i < audioBuffer.length/BUFFER_SIZE; i++){
                     let bufferChunk = audioBuffer.getChannelData(0).slice(BUFFER_SIZE*i, BUFFER_SIZE*i + BUFFER_SIZE);
                     essentia.RMS(essentia.arrayToVector(bufferChunk));

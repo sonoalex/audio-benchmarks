@@ -1,5 +1,7 @@
 require('meyda');
-import test_rms from './Benchmarks/suite_rms';
+import rms_offline from './Benchmarks/offline/suite_rms_offline';
+import rms_realtime from './Benchmarks/realtime/suite_rms_realtime';
 
-test_rms();
+rms_offline();
+rms_realtime();
 
