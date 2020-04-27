@@ -1,8 +1,9 @@
 import getFile from '../utils/getFile';
 let essentia;
+
 export default function test_rms() {
     const RMSbutton = document.getElementById('rms');
-    console.log(RMSbutton);
+    
     EssentiaModule().then( (EssentiaWasmModule) => {
         essentia = new Essentia(EssentiaWasmModule);
         // prints version of the essentia wasm backend
@@ -17,23 +18,27 @@ export default function test_rms() {
         const BUFFER_SIZE_MEYDA = 512;
 
         getFile(audioContext,'/audio/track.wav').then((audioBuffer) => {
-            console.log(audioBuffer);
-            var suite = new Benchmark.Suite;
+            const suite = new Benchmark.Suite;
 
             // add tests
             suite.add('Meyda#RMS', () => {
-                console.log(Meyda);
+                
                 for (let i = 0; i < audioBuffer.length/BUFFER_SIZE_MEYDA; i++) {
                     Meyda.bufferSize = BUFFER_SIZE_MEYDA;
-                    var bufferChunk = audioBuffer.getChannelData(0).slice(BUFFER_SIZE_MEYDA*i, BUFFER_SIZE_MEYDA*i + BUFFER_SIZE_MEYDA);
-                    const features = Meyda.extract(['rms'], bufferChunk);
-                    console.log(features)
-                    
+                    let bufferChunk = audioBuffer.getChannelData(0).slice(BUFFER_SIZE_MEYDA*i, BUFFER_SIZE_MEYDA*i + BUFFER_SIZE_MEYDA);
+                    let anotherArray;
+                    if (bufferChunk.length !== BUFFER_SIZE_MEYDA) {
+                        anotherArray = new Float32Array(BUFFER_SIZE_MEYDA);
+                        audioBuffer.copyFromChannel(anotherArray, 0, BUFFER_SIZE_MEYDA*i);
+                        bufferChunk = anotherArray;
+                    }
+
+                    Meyda.extract(['rms'], bufferChunk);   
                 }
             }).add('Essentia#RMS', () => {        
-                for (var i = 0; i < audioBuffer.length/BUFFER_SIZE; i++){
-                    var buffer = audioBuffer.getChannelData(0).slice(BUFFER_SIZE*i, BUFFER_SIZE*i + BUFFER_SIZE);
-                    var essRMS = essentia.RMS(essentia.arrayToVector(buffer));
+                for (let i = 0; i < audioBuffer.length/BUFFER_SIZE; i++){
+                    let bufferChunk = audioBuffer.getChannelData(0).slice(BUFFER_SIZE*i, BUFFER_SIZE*i + BUFFER_SIZE);
+                    essentia.RMS(essentia.arrayToVector(bufferChunk));
                     
                 }
             })
@@ -43,6 +48,7 @@ export default function test_rms() {
                 console.log('New Cycle!');
             })
             .on('complete', function() {
+                console.log(this);
                 console.log('Fastest is ' + this.filter('fastest').map('name'));
                 // TODO: Here attach to the DOM
             })
