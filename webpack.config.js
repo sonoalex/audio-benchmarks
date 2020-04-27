@@ -30,6 +30,9 @@ module.exports = {
           }
     ]
   },
+  node: {
+   fs: "empty"
+  },
 
   // Default mode for Webpack is production.
   // Depending on mode Webpack will apply different things

@@ -7,6 +7,16 @@ export default function test() {
         return audioBuffer;
     }
 
+
+    function computeEssentiaRMS(audioBuffer, bufferSize, essentia){
+      for (var i = 0; i < audioBuffer.length/bufferSize; i++){
+        var buffer = audioBuffer.getChannelData(0).slice(bufferSize*i, bufferSize*i + bufferSize);
+        var essRMS = essentia.RMS(essentia.arrayToVector(buffer));
+        console.log(essRMS);
+      }
+    }
+
+
     console.log('from class!!');
     document.addEventListener('click', (e) => {
         if (audioContext) {
@@ -25,7 +35,7 @@ export default function test() {
 
         if (typeof Meyda === "undefined") {
             console.log("Meyda could not be found! Have you included it?");
-            }
+        }
         else {
             // const analyzer = Meyda.createMeydaAnalyzer({
             //     "audioContext": audioContext,
@@ -45,5 +55,23 @@ export default function test() {
             });
             
         }
+
+
+        var essentia;
+        EssentiaModule().then( function(EssentiaWasmModule) {
+            essentia = new Essentia(EssentiaWasmModule);
+            // prints version of the essentia wasm backend
+            console.log(essentia.version)
+            // prints all the available algorithms in essentia.js
+            console.log(essentia.algorithmNames);
+
+            // add your custom audio feature extraction callbacks here
+            getFile(audioContext, '/audio/track.wav').then((audioBuffer) => {
+                computeEssentiaRMS(audioBuffer, 512, essentia);
+            });
+        });
+
+
+
     });
 }
