@@ -7,7 +7,7 @@ export default function distribution_shape(essentia, Meyda, audioURL) {
     const BUFFER_SIZE_MEYDA = 512;
 
     getFile(audioContext, audioURL).then((audioBuffer) => {
-        const suite = new Benchmark.Suite('SPECTRAL_ROLLOFF');
+        const suite = new Benchmark.Suite('DIST_SHAPE');
 
         // add tests
         suite.add('Meyda#DIST_SHAPE', () => {
