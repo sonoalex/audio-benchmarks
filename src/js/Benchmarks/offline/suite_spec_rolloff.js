@@ -1,12 +1,12 @@
 import getFile from '../../utils/getFile';
 
-export default function spectral_rolloff_offline(essentia, Meyda) {
+export default function spectral_rolloff_offline(essentia, Meyda, audioURL) {
 
     const audioContext = new AudioContext();
     const BUFFER_SIZE = 512;
     const BUFFER_SIZE_MEYDA = 512;
 
-    getFile(audioContext,'/audio/track.wav').then((audioBuffer) => {
+    getFile(audioContext, audioURL).then((audioBuffer) => {
         const suite = new Benchmark.Suite('SPECTRAL_ROLLOFF');
 
         // add tests

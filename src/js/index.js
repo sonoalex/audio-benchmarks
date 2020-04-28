@@ -22,7 +22,7 @@ let audioURL = '/audio/track.wav';
 
 RMSOffbutton.addEventListener('click', () => rms_offline(essentia, Meyda, audioURL));
 LOUDNESSOffbutton.addEventListener('click', () => loudness_offline(essentia, Meyda, audioURL));
-SpecRollofButton.addEventListener('click', () => spectral_rolloff_offline(essentia, Meyda));
+SpecRollofButton.addEventListener('click', () => spectral_rolloff_offline(essentia, Meyda, audioURL));
 
 function loadEssentia() {
     EssentiaModule().then( (EssentiaWasmModule) => {
