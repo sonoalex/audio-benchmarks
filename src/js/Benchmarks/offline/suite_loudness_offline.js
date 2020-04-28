@@ -1,7 +1,7 @@
 import getFile from '../../utils/getFile';
 let essentia;
 
-export default function rms_offline(essentia, Meyda, audioURL) {
+export default function loudness_offline(essentia, Meyda, audioURL) {
 
     const audioContext = new AudioContext();
     const BUFFER_SIZE = 512;
@@ -11,7 +11,7 @@ export default function rms_offline(essentia, Meyda, audioURL) {
         const suite = new Benchmark.Suite;
 
         // add tests
-        suite.add('Meyda#RMS_OFF', () => {
+        suite.add('Meyda#LOUDNESS_OFF', () => {
             
             for (let i = 0; i < audioBuffer.length/BUFFER_SIZE_MEYDA; i++) {
                 Meyda.bufferSize = BUFFER_SIZE_MEYDA;
@@ -24,12 +24,12 @@ export default function rms_offline(essentia, Meyda, audioURL) {
                     bufferChunk = lastBuffer;
                 }
 
-                Meyda.extract(['rms'], bufferChunk);   
+                Meyda.extract(['loudness'], bufferChunk);
             }
-        }).add('Essentia#RMS_OFF', () => {        
+        }).add('Essentia#LOUDNESS_OFF', () => {
             for (let i = 0; i < audioBuffer.length/BUFFER_SIZE; i++){
                 let bufferChunk = audioBuffer.getChannelData(0).slice(BUFFER_SIZE*i, BUFFER_SIZE*i + BUFFER_SIZE);
-                essentia.RMS(essentia.arrayToVector(bufferChunk));  
+                essentia.Loudness(essentia.arrayToVector(bufferChunk));
             }
         })
         // add listeners
@@ -43,6 +43,6 @@ export default function rms_offline(essentia, Meyda, audioURL) {
             // TODO: Here attach to the DOM
         })
         // run async
-        .run({ 'async': true });       
+        .run({ 'async': true });
     });  
 }
