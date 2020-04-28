@@ -1,16 +1,16 @@
 import getFile from '../../utils/getFile';
 
-export default function rms_offline(essentia, Meyda, audioURL) {
+export default function spectral_rolloff(essentia, Meyda, audioURL) {
 
     const audioContext = new AudioContext();
     const BUFFER_SIZE = 512;
     const BUFFER_SIZE_MEYDA = 512;
 
     getFile(audioContext, audioURL).then((audioBuffer) => {
-        const suite = new Benchmark.Suite;
+        const suite = new Benchmark.Suite('SPECTRAL_ROLLOFF');
 
         // add tests
-        suite.add('Meyda#RMS_OFF', () => {
+        suite.add('Meyda#SPEC_ROLLOFF', () => {
             
             for (let i = 0; i < audioBuffer.length/BUFFER_SIZE_MEYDA; i++) {
                 Meyda.bufferSize = BUFFER_SIZE_MEYDA;
@@ -23,12 +23,12 @@ export default function rms_offline(essentia, Meyda, audioURL) {
                     bufferChunk = lastBuffer;
                 }
 
-                Meyda.extract(['rms'], bufferChunk);   
+                Meyda.extract(['spectralRolloff'], bufferChunk);
             }
-        }).add('Essentia#RMS_OFF', () => {        
+        }).add('Essentia#SPEC_ROLLOFF', () => {        
             for (let i = 0; i < audioBuffer.length/BUFFER_SIZE; i++){
                 let bufferChunk = audioBuffer.getChannelData(0).slice(BUFFER_SIZE*i, BUFFER_SIZE*i + BUFFER_SIZE);
-                essentia.RMS(essentia.arrayToVector(bufferChunk));  
+                essentia.RollOff(essentia.arrayToVector(bufferChunk));  
             }
         })
         // add listeners
@@ -39,7 +39,9 @@ export default function rms_offline(essentia, Meyda, audioURL) {
         .on('complete', function() {
             console.log(this);
             console.log('Fastest is ' + this.filter('fastest').map('name'));
-            // TODO: Here attach to the DOM
+            // TODO: Here attach to the DOM -> SPIKE
+            let p = document.getElementById('results_spec_rolloff');
+            p.textContent = 'Fastest is ' + this.filter('fastest').map('name');
         })
         // run async
         .run({ 'async': true });       
