@@ -6,6 +6,11 @@ export default function power_spectrum(essentia, Meyda, audioURL) {
     const BUFFER_SIZE = 512;
     const BUFFER_SIZE_MEYDA = 512;
 
+    const PowerSpectrumButton = document.getElementById('powerSpectrum_offline');
+    const p = document.getElementById('results_power_spectrum');
+
+
+
     getFile(audioContext, audioURL).then((audioBuffer) => {
         const suite = new Benchmark.Suite('Power Spectrum');
 
@@ -36,12 +41,17 @@ export default function power_spectrum(essentia, Meyda, audioURL) {
             console.log(String(event.target));
             console.log('New Cycle!');
         })
+        .on('start', function() {
+            PowerSpectrumButton.classList.add('is-loading');
+            PowerSpectrumButton.disable = true;
+        })
         .on('complete', function() {
             console.log(this);
             console.log('Fastest is ' + this.filter('fastest').map('name'));
             // TODO: Here attach to the DOM -> SPIKE
-            let p = document.getElementById('results_power_spectrum');
             p.textContent = 'Fastest is ' + this.filter('fastest').map('name');
+            PowerSpectrumButton.classList.remove('is-loading');
+            PowerSpectrumButton.disable = false;
         })
         // run async
         .run({ 'async': true });       

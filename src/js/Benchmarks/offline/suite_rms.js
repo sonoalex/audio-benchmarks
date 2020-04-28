@@ -6,6 +6,10 @@ export default function rms(essentia, Meyda, audioURL) {
     const BUFFER_SIZE = 512;
     const BUFFER_SIZE_MEYDA = 512;
 
+    const p = document.getElementById('results_rms');
+    const RMSButton = document.getElementById('rms_offline');
+
+
     getFile(audioContext, audioURL).then((audioBuffer) => {
         const suite = new Benchmark.Suite('RMS');
 
@@ -36,10 +40,18 @@ export default function rms(essentia, Meyda, audioURL) {
             console.log(String(event.target));
             console.log('New Cycle!');
         })
+        .on('start', function() {
+            RMSButton.classList.add('is-loading');
+            RMSButton.disable = true;
+        })
         .on('complete', function() {
             console.log(this);
             console.log('Fastest is ' + this.filter('fastest').map('name'));
             // TODO: Here attach to the DOM
+            
+            p.textContent = 'Fastest is ' + this.filter('fastest').map('name');
+            RMSButton.classList.remove('is-loading');
+            RMSButton.disable = false;
         })
         // run async
         .run({ 'async': true });       

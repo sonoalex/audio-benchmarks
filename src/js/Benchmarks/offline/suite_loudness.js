@@ -1,11 +1,13 @@
 import getFile from '../../utils/getFile';
-let essentia;
 
 export default function loudness(essentia, Meyda, audioURL) {
 
     const audioContext = new AudioContext();
     const BUFFER_SIZE = 512;
     const BUFFER_SIZE_MEYDA = 512;
+
+    const p = document.getElementById('results_loudness');
+    const loudnessBtn = document.getElementById('loudness_offline');
 
     getFile(audioContext, audioURL).then((audioBuffer) => {
         const suite = new Benchmark.Suite('LOUDNESS');
@@ -37,10 +39,17 @@ export default function loudness(essentia, Meyda, audioURL) {
             console.log(String(event.target));
             console.log('New Cycle!');
         })
+        .on('start', function() {
+            loudnessBtn.classList.add('is-loading');
+            loudnessBtn.disable = true;
+        })
         .on('complete', function() {
             console.log(this);
             console.log('Fastest is ' + this.filter('fastest').map('name'));
             // TODO: Here attach to the DOM
+            p.textContent = 'Fastest is ' + this.filter('fastest').map('name');
+            loudnessBtn.classList.remove('is-loading');
+            loudnessBtn.disable = false;
         })
         // run async
         .run({ 'async': true });
