@@ -5,7 +5,10 @@ import loudness from './Benchmarks/offline/suite_loudness';
 import spectral_rolloff from './Benchmarks/offline/suite_spec_rolloff';
 import energy from './Benchmarks/offline/suite_energy';
 import distribution_shape from './Benchmarks/offline/suite_distribution_shape';
+<<<<<<< HEAD
 import zcr from './Benchmarks/offline/suite_zcr';
+=======
+>>>>>>> fix conflict
 import powerSpectrum from './Benchmarks/offline/suite_power_spectrum';
 //import rms_realtime from './Benchmarks/realtime/suite_rms_realtime';
 
@@ -15,7 +18,10 @@ const LoudnessButton = document.getElementById('loudness_offline');
 const SpecRollofButton = document.getElementById('spec_rollof_offline');
 const EnergyButton = document.getElementById('energy_offline');
 const DistShapeButton = document.getElementById('dist_shape_offline');
+<<<<<<< HEAD
 const ZCRButton = document.getElementById('zcr_offline');
+=======
+>>>>>>> fix conflict
 const PowerSpectrumButton = document.getElementById('powerSpectrum_offline');
 
 //Custom Variables
@@ -33,9 +39,15 @@ LoudnessButton.addEventListener('click', () => loudness(essentia, Meyda, audioUR
 SpecRollofButton.addEventListener('click', () => spectral_rolloff(essentia, Meyda, audioURL));
 EnergyButton.addEventListener('click', () => energy(essentia, Meyda, audioURL));
 DistShapeButton.addEventListener('click', () => distribution_shape(essentia, Meyda, audioURL));
+<<<<<<< HEAD
 ZCRButton.addEventListener('click', () => zcr(essentia, Meyda, audioURL));
 PowerSpectrumButton.addEventListener('click', () => powerSpectrum(essentia, Meyda, audioURL));
 
+=======
+PowerSpectrumButton.addEventListener('click', () => powerSpectrum(essentia, Meyda, audioURL));
+
+
+>>>>>>> fix conflict
 function loadEssentia() {
     EssentiaModule().then( (EssentiaWasmModule) => {
         essentia = new Essentia(EssentiaWasmModule);
