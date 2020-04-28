@@ -1,6 +1,6 @@
 // IMPORTS
 const Meyda = require('meyda');
-import rms_offline from './Benchmarks/offline/suite_rms_offline';
+import rms from './Benchmarks/offline/suite_rms';
 import loudness from './Benchmarks/offline/suite_loudness';
 import spectral_rolloff from './Benchmarks/offline/suite_spec_rolloff';
 import energy from './Benchmarks/offline/suite_energy';
@@ -8,7 +8,7 @@ import distribution_shape from './Benchmarks/offline/suite_distribution_shape';
 //import rms_realtime from './Benchmarks/realtime/suite_rms_realtime';
 
 // DOM ELEMENTS
-const RMSOffbutton = document.getElementById('rms_offline');
+const RMSButton = document.getElementById('rms_offline');
 const LoudnessButton = document.getElementById('loudness_offline');
 const SpecRollofButton = document.getElementById('spec_rollof_offline');
 const EnergyButton = document.getElementById('energy_offline');
@@ -24,7 +24,7 @@ let audioURL = '/audio/track.wav';
  * START HERE WITH ALL SUITES
  */
 
-RMSOffbutton.addEventListener('click', () => rms_offline(essentia, Meyda, audioURL));
+RMSButton.addEventListener('click', () => rms(essentia, Meyda, audioURL));
 LoudnessButton.addEventListener('click', () => loudness(essentia, Meyda, audioURL));
 SpecRollofButton.addEventListener('click', () => spectral_rolloff(essentia, Meyda, audioURL));
 EnergyButton.addEventListener('click', () => energy(essentia, Meyda, audioURL));
