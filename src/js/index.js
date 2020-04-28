@@ -33,7 +33,7 @@ let audioURL = '/audio/track.wav';
  */
 
 RMSButton.addEventListener('click', () => rms(essentia, Meyda, audioURL));
-LoudnessButton.addEventListener('click', () => loudness(essentia, Meyda, audioURL));
+LoudnessButton.addEventListener('click', (e) => loudness(essentia, Meyda, audioURL));
 SpecRollofButton.addEventListener('click', () => spectral_rolloff(essentia, Meyda, audioURL));
 EnergyButton.addEventListener('click', () => energy(essentia, Meyda, audioURL));
 DistShapeButton.addEventListener('click', () => distribution_shape(essentia, Meyda, audioURL));

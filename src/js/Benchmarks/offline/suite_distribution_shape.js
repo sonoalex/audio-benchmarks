@@ -6,6 +6,9 @@ export default function distribution_shape(essentia, Meyda, audioURL) {
     const BUFFER_SIZE = 512;
     const BUFFER_SIZE_MEYDA = 512;
 
+    const p = document.getElementById('results_dist_shape');
+    const DistShapeButton = document.getElementById('dist_shape_offline');
+
     getFile(audioContext, audioURL).then((audioBuffer) => {
         const suite = new Benchmark.Suite('DIST_SHAPE');
 
@@ -37,12 +40,17 @@ export default function distribution_shape(essentia, Meyda, audioURL) {
             console.log(String(event.target));
             console.log('New Cycle!');
         })
+        .on('start', function() {
+            DistShapeButton.classList.add('is-loading');
+            DistShapeButton.disable = true;
+        })
         .on('complete', function() {
             console.log(this);
             console.log('Fastest is ' + this.filter('fastest').map('name'));
             // TODO: Here attach to the DOM -> SPIKE
-            let p = document.getElementById('results_spec_rolloff');
             p.textContent = 'Fastest is ' + this.filter('fastest').map('name');
+            DistShapeButton.classList.remove('is-loading');
+            DistShapeButton.disable = false;
         })
         // run async
         .run({ 'async': true });       

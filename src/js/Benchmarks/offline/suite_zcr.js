@@ -6,6 +6,9 @@ export default function zcr(essentia, Meyda, audioURL) {
     const BUFFER_SIZE = 512;
     const BUFFER_SIZE_MEYDA = 512;
 
+    const p = document.getElementById('results_zcr');
+    const ZCRButton = document.getElementById('zcr_offline');
+
     getFile(audioContext, audioURL).then((audioBuffer) => {
         const suite = new Benchmark.Suite('ZCR');
 
@@ -36,12 +39,17 @@ export default function zcr(essentia, Meyda, audioURL) {
             console.log(String(event.target));
             console.log('New Cycle!');
         })
+        .on('start', function() {
+            ZCRButton.classList.add('is-loading');
+            ZCRButton.disable = true;
+        })
         .on('complete', function() {
             console.log(this);
             console.log('Fastest is ' + this.filter('fastest').map('name'));
             // TODO: Here attach to the DOM -> SPIKE
-            let p = document.getElementById('results_zcr');
             p.textContent = 'Fastest is ' + this.filter('fastest').map('name');
+            ZCRButton.classList.remove('is-loading');
+            ZCRButton.disable = false;
         })
         // run async
         .run({ 'async': true });       

@@ -6,6 +6,9 @@ export default function spectral_rolloff(essentia, Meyda, audioURL) {
     const BUFFER_SIZE = 512;
     const BUFFER_SIZE_MEYDA = 512;
 
+    const p = document.getElementById('results_spec_rolloff');
+    const SpecRollofButton = document.getElementById('spec_rollof_offline');
+
     getFile(audioContext, audioURL).then((audioBuffer) => {
         const suite = new Benchmark.Suite('SPECTRAL_ROLLOFF');
 
@@ -36,12 +39,17 @@ export default function spectral_rolloff(essentia, Meyda, audioURL) {
             console.log(String(event.target));
             console.log('New Cycle!');
         })
+        .on('start', function() {
+            SpecRollofButton.classList.add('is-loading');
+            SpecRollofButton.disable = true;
+        })
         .on('complete', function() {
             console.log(this);
             console.log('Fastest is ' + this.filter('fastest').map('name'));
             // TODO: Here attach to the DOM -> SPIKE
-            let p = document.getElementById('results_spec_rolloff');
             p.textContent = 'Fastest is ' + this.filter('fastest').map('name');
+            SpecRollofButton.classList.remove('is-loading');
+            SpecRollofButton.disable = false;
         })
         // run async
         .run({ 'async': true });       
