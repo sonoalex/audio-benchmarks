@@ -6,6 +6,7 @@ import spectral_rolloff from './Benchmarks/offline/suite_spec_rolloff';
 import energy from './Benchmarks/offline/suite_energy';
 import distribution_shape from './Benchmarks/offline/suite_distribution_shape';
 import zcr from './Benchmarks/offline/suite_zcr';
+import powerSpectrum from './Benchmarks/offline/suite_power_spectrum';
 //import rms_realtime from './Benchmarks/realtime/suite_rms_realtime';
 
 // DOM ELEMENTS
@@ -15,6 +16,7 @@ const SpecRollofButton = document.getElementById('spec_rollof_offline');
 const EnergyButton = document.getElementById('energy_offline');
 const DistShapeButton = document.getElementById('dist_shape_offline');
 const ZCRButton = document.getElementById('zcr_offline');
+const PowerSpectrumButton = document.getElementById('powerSpectrum_offline');
 
 //Custom Variables
 let essentia;
@@ -32,6 +34,7 @@ SpecRollofButton.addEventListener('click', () => spectral_rolloff(essentia, Meyd
 EnergyButton.addEventListener('click', () => energy(essentia, Meyda, audioURL));
 DistShapeButton.addEventListener('click', () => distribution_shape(essentia, Meyda, audioURL));
 ZCRButton.addEventListener('click', () => zcr(essentia, Meyda, audioURL));
+PowerSpectrumButton.addEventListener('click', () => powerSpectrum(essentia, Meyda, audioURL));
 
 function loadEssentia() {
     EssentiaModule().then( (EssentiaWasmModule) => {

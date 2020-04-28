@@ -1,16 +1,16 @@
 import getFile from '../../utils/getFile';
 
-export default function zcr(essentia, Meyda, audioURL) {
+export default function power_spectrum(essentia, Meyda, audioURL) {
 
     const audioContext = new AudioContext();
     const BUFFER_SIZE = 512;
     const BUFFER_SIZE_MEYDA = 512;
 
     getFile(audioContext, audioURL).then((audioBuffer) => {
-        const suite = new Benchmark.Suite('ZCR');
+        const suite = new Benchmark.Suite('Power Spectrum');
 
         // add tests
-        suite.add('Meyda#ZCR', () => {
+        suite.add('Meyda#PowerSpectrum', () => {
             
             for (let i = 0; i < audioBuffer.length/BUFFER_SIZE_MEYDA; i++) {
                 Meyda.bufferSize = BUFFER_SIZE_MEYDA;
@@ -23,12 +23,12 @@ export default function zcr(essentia, Meyda, audioURL) {
                     bufferChunk = lastBuffer;
                 }
 
-                Meyda.extract(['zcr'], bufferChunk);
+                Meyda.extract(['powerSpectrum'], bufferChunk);
             }
-        }).add('Essentia#ZCR', () => {        
+        }).add('Essentia#PowerSpectrum', () => {        
             for (let i = 0; i < audioBuffer.length/BUFFER_SIZE; i++){
                 let bufferChunk = audioBuffer.getChannelData(0).slice(BUFFER_SIZE*i, BUFFER_SIZE*i + BUFFER_SIZE);
-                essentia.ZeroCrossingRate(essentia.arrayToVector(bufferChunk));  
+                essentia.PowerSpectrum(essentia.arrayToVector(bufferChunk));  
             }
         })
         // add listeners
@@ -40,7 +40,7 @@ export default function zcr(essentia, Meyda, audioURL) {
             console.log(this);
             console.log('Fastest is ' + this.filter('fastest').map('name'));
             // TODO: Here attach to the DOM -> SPIKE
-            let p = document.getElementById('results_zcr');
+            let p = document.getElementById('results_power_spectrum');
             p.textContent = 'Fastest is ' + this.filter('fastest').map('name');
         })
         // run async
