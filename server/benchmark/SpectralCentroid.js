@@ -35,11 +35,10 @@ fs.readFile(audioFilePath, (err, data) => {
     // add listeners
     .on('cycle', function(event) {
         console.log(String(event.target));
-        console.log('New Cycle!');
     })
     
     .on('complete', function() {
-        console.log(this);
+        //console.log(this);
         console.log('Fastest is ' + this.filter('fastest').map('name'));
     })
     // run async
