@@ -24,6 +24,7 @@
     "@babel/plugin-transform-runtime": "^7.9.0",
     "@babel/runtime": "^7.9.2",
     "benchmark": "^2.1.4",
+    "essentia.js": "0.0.9",
     "meyda": "^4.3.1"
   }
 }
