@@ -44,7 +44,7 @@ export default function rms(essentia, Meyda, audioURL) {
                     bufferChunk = lastBuffer;
                 }
 
-                Meyda.extract(['rms'], bufferChunk);   
+                Meyda.extract(['rms'], bufferChunk);
             }
         }).add('Essentia#RMS', () => {        
             for (let i = 0; i < audioBuffer.length/BUFFER_SIZE; i++){
@@ -80,15 +80,33 @@ export default function rms(essentia, Meyda, audioURL) {
             meyda_deviation.textContent = this[0].stats.deviation;
             meyda_variance.textContent = this[0].stats.variance;
             var meyda_trace = {
-                x: this[0].stats.sample,
-                type: 'histogram',
-                name: 'meyda'
-              };
+                name: 'meyda',
+                type: 'violin',
+                y: this[0].stats.sample,
+                points: 'none',
+                box: {
+                    visible: true
+                },
+                boxpoints: false,
+                line:{
+                    color: 'green'
+                },
+                opacity: 0.6,
+                meanline:{
+                    visible: true
+                },
+                x0: 'RMS execution time'
+            };
             var meyda_data = [meyda_trace];
-            var xaxis={title:'time'};
-            var yaxis={title:'executions'};
-            var meyda_layout = {title:"Distribution meyda RMS", xaxis, yaxis};
+
+            var meyda_layout = {
+                title:"Distribution meyda RMS",
+                yaxis: {
+                    zeroline: false
+                }
+            };
             Plotly.newPlot(meyda_plot, meyda_data, meyda_layout);
+
 
             ess_mean.textContent = this[1].stats.mean;
             ess_moe.textContent = this[1].stats.moe;
@@ -97,19 +115,41 @@ export default function rms(essentia, Meyda, audioURL) {
             ess_deviation.textContent = this[1].stats.deviation;
             ess_variance.textContent = this[1].stats.variance;
             var ess_trace = {
-                x: this[1].stats.sample,
-                type: 'histogram',
-                name: 'essentia.js'
-              };
-            var ess_layout = {title:"Distribution essentia.js RMS", xaxis, yaxis};
+                name: 'essentia.js',
+                type: 'violin',
+                y: this[1].stats.sample,
+                points: 'none',
+                box: {
+                    visible: true
+                },
+                boxpoints: false,
+                line:{
+                    color: 'red'
+                },
+                opacity: 0.6,
+                meanline:{
+                    visible: true
+                },
+                y0: 'RMS execution time'
+            };
             var ess_data = [ess_trace];
+
+            var ess_layout = {
+                title:"Distribution essentia.js RMS",
+                yaxis: {
+                    zeroline: false
+                }
+            };
             Plotly.newPlot(ess_plot, ess_data, ess_layout);
+
+
+
 
 
             // stack_plot
             var stack_data = [ess_trace, meyda_trace];
 
-            var stack_layout = {title:"Distribution stacked RMS", xaxis, yaxis, barmode: "stack"};
+            var stack_layout = {title:"Distribution stacked RMS"};
             Plotly.newPlot(stack_plot, stack_data, stack_layout);
         })
         // run async
