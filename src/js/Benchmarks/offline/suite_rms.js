@@ -1,5 +1,6 @@
 import getFile from '../../utils/getFile';
 import downloadJson from '../../utils/downloadJson';
+import violinDistributionPlot from '../../utils/violinDistributionPlot';
 
 export default function rms(essentia, Meyda, audioURL) {
 
@@ -80,34 +81,6 @@ export default function rms(essentia, Meyda, audioURL) {
             meyda_sem.textContent = this[0].stats.sem;
             meyda_deviation.textContent = this[0].stats.deviation;
             meyda_variance.textContent = this[0].stats.variance;
-            var meyda_trace = {
-                name: 'meyda',
-                type: 'violin',
-                y: this[0].stats.sample,
-                points: 'none',
-                box: {
-                    visible: true
-                },
-                boxpoints: false,
-                line:{
-                    color: 'green'
-                },
-                opacity: 0.6,
-                meanline:{
-                    visible: true
-                },
-                x0: 'RMS execution time'
-            };
-            var meyda_data = [meyda_trace];
-
-            var meyda_layout = {
-                title:"Distribution meyda RMS",
-                yaxis: {
-                    zeroline: false
-                }
-            };
-            Plotly.newPlot(meyda_plot, meyda_data, meyda_layout);
-
 
             ess_mean.textContent = this[1].stats.mean;
             ess_moe.textContent = this[1].stats.moe;
@@ -115,40 +88,11 @@ export default function rms(essentia, Meyda, audioURL) {
             ess_sem.textContent = this[1].stats.sem;
             ess_deviation.textContent = this[1].stats.deviation;
             ess_variance.textContent = this[1].stats.variance;
-            var ess_trace = {
-                name: 'essentia.js',
-                type: 'violin',
-                y: this[1].stats.sample,
-                points: 'none',
-                box: {
-                    visible: true
-                },
-                boxpoints: false,
-                line:{
-                    color: 'red'
-                },
-                opacity: 0.6,
-                meanline:{
-                    visible: true
-                },
-                y0: 'RMS execution time'
-            };
-            var ess_data = [ess_trace];
 
-            var ess_layout = {
-                title:"Distribution essentia.js RMS",
-                yaxis: {
-                    zeroline: false
-                }
-            };
-            Plotly.newPlot(ess_plot, ess_data, ess_layout);
-
-            // stack_plot
-            var stack_data = [ess_trace, meyda_trace];
-
-            var stack_layout = {title:"Distribution stacked RMS"};
-            Plotly.newPlot(stack_plot, stack_data, stack_layout);
-
+            violinDistributionPlot(meyda_plot, {0:["meyda", this[0].stats.sample, "green"]}, "Time distribution RMS - Meyda");
+            violinDistributionPlot(ess_plot, {0:["essentia.js",this[1].stats.sample, "red"]}, "Time distribution RMS - Essentia");
+            violinDistributionPlot(stack_plot, {0:["meyda", this[0].stats.sample, "green"], 1:["essentia.js", this[1].stats.sample, "red"]},
+                                     "Time distribution RMS - Stack");
 
             const resultsObj = {
                 "meyda": {
@@ -171,6 +115,7 @@ export default function rms(essentia, Meyda, audioURL) {
                 }
             }
             downloadJson(resultsObj, "rms.json");
+
         })
         // run async
         .run({ 'async': true });       
