@@ -1,4 +1,5 @@
 import getFile from '../../utils/getFile';
+import downloadJson from '../../utils/downloadJson';
 
 export default function rms(essentia, Meyda, audioURL) {
 
@@ -142,15 +143,34 @@ export default function rms(essentia, Meyda, audioURL) {
             };
             Plotly.newPlot(ess_plot, ess_data, ess_layout);
 
-
-
-
-
             // stack_plot
             var stack_data = [ess_trace, meyda_trace];
 
             var stack_layout = {title:"Distribution stacked RMS"};
             Plotly.newPlot(stack_plot, stack_data, stack_layout);
+
+
+            const resultsObj = {
+                "meyda": {
+                    "mean": this[0].stats.mean,
+                    "moe": this[0].stats.moe,
+                    "rme": this[0].stats.rme,
+                    "sem": this[0].stats.sem,
+                    "deviation": this[0].stats.deviation,
+                    "variance": this[0].stats.variance,
+                    "execution times": this[0].stats.sample
+                },
+                "essentia": {
+                    "mean": this[1].stats.mean,
+                    "moe": this[1].stats.moe,
+                    "rme": this[1].stats.rme,
+                    "sem": this[1].stats.sem,
+                    "deviation": this[1].stats.deviation,
+                    "variance": this[1].stats.variance,
+                    "execution times": this[1].stats.sample
+                }
+            }
+            downloadJson(resultsObj, "rms.json");
         })
         // run async
         .run({ 'async': true });       
