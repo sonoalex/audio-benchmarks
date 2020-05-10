@@ -20,7 +20,7 @@ function violinDistributionPlot(domEl, data, title){
 	    };
 		plot_data.push(trace);
 	}
-    var plot_layout = {
+    const plot_layout = {
         title: title,
         yaxis: {
             zeroline: false

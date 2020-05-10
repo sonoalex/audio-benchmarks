@@ -73,7 +73,7 @@ export default function rms(essentia, Meyda, audioURL) {
             RMSButton.disable = false;
 
             meyda_results.classList.remove('is-hidden');
-            essentia_results.classList.remove('is-hidden');
+            ess_results.classList.remove('is-hidden');
 
             meyda_mean.textContent = this[0].stats.mean;
             meyda_moe.textContent = this[0].stats.moe;
