@@ -43,6 +43,7 @@ export default function rms(essentia, Meyda, audioURL) {
                 essentia.RMS(essentia.arrayToVector(frame));
             }
         }, options)
+        // add listeners
         .on('cycle', function(event) {
             console.log(String(event.target));
             console.log('New Cycle!');
