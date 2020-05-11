@@ -15,6 +15,13 @@ export default function rms(essentia, Meyda, audioURL) {
     const ess_table = document.querySelector('#rms #essentia_results #table');
     const ess_plot = document.querySelector('#rms #essentia_results #plot');
     const stack_plot = document.querySelector('#rms #essentia_results #plot_stack');
+    const options = {
+        minSamples: 100,
+        initCount: 1,
+        minTime: -Infinity,
+        maxTime: -Infinity,
+    }
+
 
     getFile(audioContext, audioURL).then((audioBuffer) => {
         const suite = new Benchmark.Suite('RMS');
@@ -31,11 +38,13 @@ export default function rms(essentia, Meyda, audioURL) {
                 }
                 Meyda.extract(['rms'], frame);
             }
-        }).add('Essentia#RMS', () => {
+        }, options)
+        .add('Essentia#RMS', () => {
             for (let frame in essentia.FrameGenerator(audioBuffer.getChannelData(0), FRAME_SIZE, HOP_SIZE)){
                 essentia.RMS(essentia.arrayToVector(frame));
             }
-        })
+        },options)
+        // add listeners
         .on('cycle', function(event) {
             console.log(String(event.target));
             console.log('New Cycle!');
