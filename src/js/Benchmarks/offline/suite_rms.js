@@ -22,7 +22,6 @@ export default function rms(essentia, Meyda, audioURL) {
         maxTime: -Infinity,
     }
 
-
     getFile(audioContext, audioURL).then((audioBuffer) => {
         const suite = new Benchmark.Suite('RMS');
 
