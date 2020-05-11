@@ -6,9 +6,8 @@ import showResultsTable from '../../utils/showResultsTable';
 export default function rms(essentia, Meyda, audioURL) {
 
     const audioContext = new AudioContext();
-    const BUFFER_SIZE = 512;
-    const BUFFER_SIZE_MEYDA = 512;
-
+    const FRAME_SIZE = 2048;
+    const HOP_SIZE = 1024;
     const RMSButton = document.getElementById('rms_offline');
     const p = document.getElementById('results_rms');
     const meyda_table = document.querySelector('#rms #meyda_results #table');
@@ -20,29 +19,23 @@ export default function rms(essentia, Meyda, audioURL) {
     getFile(audioContext, audioURL).then((audioBuffer) => {
         const suite = new Benchmark.Suite('RMS');
 
-        // add tests
         suite.add('Meyda#RMS', () => {
-            
-            for (let i = 0; i < audioBuffer.length/BUFFER_SIZE_MEYDA; i++) {
-                Meyda.bufferSize = BUFFER_SIZE_MEYDA;
-                let bufferChunk = audioBuffer.getChannelData(0).slice(BUFFER_SIZE_MEYDA*i, BUFFER_SIZE_MEYDA*i + BUFFER_SIZE_MEYDA);
-                let lastBuffer;
-                
-                if (bufferChunk.length !== BUFFER_SIZE_MEYDA) {
-                    lastBuffer = new Float32Array(BUFFER_SIZE_MEYDA);
-                    audioBuffer.copyFromChannel(lastBuffer, 0, BUFFER_SIZE_MEYDA*i);
-                    bufferChunk = lastBuffer;
+            for (let i = 0; i < audioBuffer.length/HOP_SIZE; i++) {
+                Meyda.bufferSize = FRAME_SIZE;
+                let frame = audioBuffer.getChannelData(0).slice(HOP_SIZE*i, HOP_SIZE*i + FRAME_SIZE);
+                let lastFrame;
+                if (frame.length !== FRAME_SIZE) {
+                    lastFrame = new Float32Array(FRAME_SIZE);
+                    audioBuffer.copyFromChannel(lastFrame, 0, HOP_SIZE*i);
+                    frame = lastFrame;
                 }
-
-                Meyda.extract(['rms'], bufferChunk);
+                Meyda.extract(['rms'], frame);
             }
-        }).add('Essentia#RMS', () => {        
-            for (let i = 0; i < audioBuffer.length/BUFFER_SIZE; i++){
-                let bufferChunk = audioBuffer.getChannelData(0).slice(BUFFER_SIZE*i, BUFFER_SIZE*i + BUFFER_SIZE);
-                essentia.RMS(essentia.arrayToVector(bufferChunk));  
+        }).add('Essentia#RMS', () => {
+            for (let frame in essentia.FrameGenerator(audioBuffer.getChannelData(0), FRAME_SIZE, HOP_SIZE)){
+                essentia.RMS(essentia.arrayToVector(frame));
             }
         })
-        // add listeners
         .on('cycle', function(event) {
             console.log(String(event.target));
             console.log('New Cycle!');
@@ -54,7 +47,6 @@ export default function rms(essentia, Meyda, audioURL) {
         .on('complete', function() {
             console.log(this);
             console.log('Fastest is ' + this.filter('fastest').map('name'));
-            // TODO: Here attach to the DOM
             
             p.textContent = 'Fastest is ' + this.filter('fastest').map('name');
             RMSButton.classList.remove('is-loading');
@@ -89,9 +81,7 @@ export default function rms(essentia, Meyda, audioURL) {
                 }
             }
             downloadJson(resultsObj, "rms.json");
-
         })
-        // run async
         .run({ 'async': true });       
     });  
 }
