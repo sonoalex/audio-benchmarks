@@ -8,6 +8,16 @@ const FRAME_SIZE = 2048;
 const HOP_SIZE = 1024;
 const audioFilePath = path.join(__dirname, '..', '..','audio', 'track.wav');
 
+var options = {};
+if (process.argv[2] !== undefined){
+    options = {
+            minSamples: process.argv[2],
+            initCount: 1,
+            minTime: -Infinity,
+            maxTime: -Infinity,
+            };
+}
+
 fs.readFile(audioFilePath, (err, data) => {
     if (err) throw err;
     let audioBuffer = data;
@@ -24,11 +34,12 @@ fs.readFile(audioFilePath, (err, data) => {
             }
             Meyda.extract(['energy'], frame);
         }
-    }).add('Essentia#Energy', () => {
+    }, options)
+    .add('Essentia#Energy', () => {
         for (let frame in essentia.FrameGenerator(audioBuffer, FRAME_SIZE, HOP_SIZE)){
             essentia.Energy(essentia.arrayToVector(frame));
         }
-    })
+    }, options)
     // add listeners
     .on('cycle', function(event) {
         console.log(String(event.target));
@@ -38,6 +49,38 @@ fs.readFile(audioFilePath, (err, data) => {
     .on('complete', function() {
         //console.log(this);
         console.log('Fastest is ' + this.filter('fastest').map('name'));
+
+        const resultsObj = {
+            "meyda": {
+                "mean": this[0].stats.mean,
+                "moe": this[0].stats.moe,
+                "rme": this[0].stats.rme,
+                "sem": this[0].stats.sem,
+                "deviation": this[0].stats.deviation,
+                "variance": this[0].stats.variance,
+                "execution times": this[0].stats.sample
+            },
+            "essentia": {
+                "mean": this[1].stats.mean,
+                "moe": this[1].stats.moe,
+                "rme": this[1].stats.rme,
+                "sem": this[1].stats.sem,
+                "deviation": this[1].stats.deviation,
+                "variance": this[1].stats.variance,
+                "execution times": this[1].stats.sample
+            }
+        }
+
+        var json = JSON.stringify(resultsObj);
+        fs.writeFile('energy_node.json', json, 'utf8', function (err) {
+            if (err) {
+                console.log("An error occured while writing energy JSON Object to File.");
+                return console.log(err);
+            }
+
+            console.log("energy JSON file has been saved.");
+        });
+
     })
     // run async
     .run({ 'async': true });       
