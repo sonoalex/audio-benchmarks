@@ -1,232 +1,239 @@
 <!doctype html>
 <html>
-   <head>
-      <title>Essentia's Benchmarking</title>
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css">
-      <link rel="stylesheet" href="dist/main.css">
-   </head>
-   <body>
-      <section class="section">
-         <div class="container center padding_20">
-               <h1 class="title">Algorithms time Benchmarking</h1>
-               <h2 class="subtitle">
-                  Audio comparison between  <strong>Meyda.js</strong> and <strong>essentia.js</strong>
-               </h2>
-         </div>
-         <div class="container padding_20">
-            <h3 class="title">
-               Options
-            </h3>
-            <div class="field">
-                  <div class="control">
-                     Repetitions:
-                    <input class="input" type="tel" placeholder="Repetitions" id="repetitions" maxlength="4">
-                  </div>
-         </div>
-		<div class="container" id="rms">
-            <div class="notification">
-				<h1 class="title">RMS</h1>
-				<div class="columns is-mobile is-centered">
-					<div class="column">
-						<div class="buttons">
-						    <button id="rms_offline" class="button is-primary">Offline</button>
-						</div>
-						<p id="results_rms"></p>
-						<a id="download_results_rms" class="is-hidden"></a>
-					</div>
-					<div class="column" id="essentia_results">
-						<h4 class="subtitle is-4">essentia.js results</h4>
-						<div id="table"></div>
-						<div id="plot"></div>
-						<div id="plot_stack"></div>
-					</div>
-					<div class="column" id="meyda_results">
-						<h4 class="subtitle is-4">meyda results</h4>
-						<div id="table"></div>
-						<div id="plot"></div>
-					</div>
-               </div>
+    <head>
+        <title>Essentia's Benchmarking</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css">
+		<link rel="stylesheet" href="dist/main.css">
+    </head>
+    <body>
+        <section class="section">
+            <div class="container center padding_20">
+                <h1 class="title">Algorithms time Benchmarking</h1>
+                <h2 class="subtitle">
+                    Audio comparison between  <strong>Meyda.js</strong> and <strong>essentia.js</strong>
+                </h2>
             </div>
-            <div class="notification">
-               <h1 class="title">Loudness</h1>
-               <div class="columns is-mobile is-centered">
-                  <div class="column is-half">
-                     <div class="buttons">
-                        <button id="loudness_offline" class="button is-primary">Offline</button>
-                     </div>
-                  </div>
-                  <div class="column">
-                     <div class="buttons">
-                        <button class="button is-primary">Primary</button>
-                     </div>
-                  </div>
-               </div>
-               <div>
-                  <p id="results_loudness"></p>
-               </div>
-            </div>
-            <div class="notification">
-               <h1 class="title">Spectral Rolloff</h1>
-               <div class="columns is-mobile is-centered">
-                  <div class="column is-half">
-                     <div class="buttons">
-                        <button id="spec_rollof_offline" class="button is-primary">Offline</button>
-                     </div>
-                  </div>
-                  <div class="column">
-                     <div class="buttons">
-                        <button class="button is-primary">Primary</button>
-                     </div>
-                  </div>
-               </div>
-               <div>
-                  <p id="results_spec_rolloff"></p>
-               </div>
-            </div>
-            <div class="notification">
-              <h1 class="title">Energy</h1>
-              <div class="columns is-mobile is-centered">
-                 <div class="column is-half">
-                    <div class="buttons">
-                       <button id="energy_offline" class="button is-primary">Offline</button>
+        	<div class="container padding_20">
+            	<h3 class="title">
+               		Options
+            	</h3>
+            	<div class="field">
+                	<div class="control">
+                    	Repetitions:
+                    	<input class="input" type="tel" placeholder="Repetitions" id="repetitions" maxlength="4">
+                  	</div>
+         	</div>
+                <div class="notification" id="energy">
+                    <h1 class="title">Energy</h1>
+                    <div class="columns is-mobile is-centered">
+                        <div class="column">
+                            <div class="buttons">
+                                <button id="energy_offline" class="button is-primary">Offline</button>
+                            </div>
+                            <p id="results_energy"></p>
+                            <a id="download_results_energy" class="is-hidden"></a>
+                        </div>
+                        <div class="column" id="essentia_results">
+                            <h4 class="subtitle is-4">essentia.js results</h4>
+                            <div id="table"></div>
+                            <div id="plot"></div>
+                            <div id="plot_stack"></div>
+                        </div>
+                        <div class="column" id="meyda_results">
+                            <h4 class="subtitle is-4">meyda results</h4>
+                            <div id="table"></div>
+                            <div id="plot"></div>
+                        </div>
                     </div>
-                 </div>
-                 <div class="column">
-                    <div class="buttons">
-                       <button class="button is-primary">Primary</button>
+                </div>
+                <div class="notification" id="rms">
+                    <h1 class="title">RMS</h1>
+                    <div class="columns is-mobile is-centered">
+                        <div class="column">
+                            <div class="buttons">
+                                <button id="rms_offline" class="button is-primary">Offline</button>
+                            </div>
+                            <p id="results_rms"></p>
+                            <a id="download_results_rms" class="is-hidden"></a>
+                        </div>
+                        <div class="column" id="essentia_results">
+                            <h4 class="subtitle is-4">essentia.js results</h4>
+                            <div id="table"></div>
+                            <div id="plot"></div>
+                            <div id="plot_stack"></div>
+                        </div>
+                        <div class="column" id="meyda_results">
+                            <h4 class="subtitle is-4">meyda results</h4>
+                            <div id="table"></div>
+                            <div id="plot"></div>
+                        </div>
                     </div>
-                 </div>
-              </div>
-              <div>
-                 <p id="results_energy"></p>
-              </div>
-           </div>
-            <div class="notification">
+                </div>
+                <div class="notification">
+                    <h1 class="title">Loudness</h1>
+                    <div class="columns is-mobile is-centered">
+                        <div class="column">
+                            <div class="buttons">
+                                <button id="loudness_offline" class="button is-primary">Offline</button>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="buttons">
+                                <button class="button is-primary">Primary</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <p id="results_loudness"></p>
+                    </div>
+                </div>
+                <div class="notification">
+                    <h1 class="title">Spectral Rolloff</h1>
+                    <div class="columns is-mobile is-centered">
+                        <div class="column is-half">
+                            <div class="buttons">
+                                <button id="spec_rollof_offline" class="button is-primary">Offline</button>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="buttons">
+                                <button class="button is-primary">Primary</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <p id="results_spec_rolloff"></p>
+                    </div>
+                </div>
+                <div class="notification">
 
-               <h1 class="title">Distribution Shape</h1>
-               <h2 class="subtitle">Includes: Spectral Kurtosis, Spectral Skewness, Spectral Spread</h2>
-               <div class="columns is-mobile is-centered">
-                  <div class="column is-half">
-                     <div class="buttons">
-                        <button id="dist_shape_offline" class="button is-primary">Offline</button>
-                     </div>
-                  </div>
-                  <div class="column">
-                     <div class="buttons">
-                        <button class="button is-primary">Primary</button>
-                     </div>
-                  </div>
-               </div>
-               <div>
-                  <p id="results_dist_shape"></p>
-               </div>
+                    <h1 class="title">Distribution Shape</h1>
+                    <h2 class="subtitle">Includes: Spectral Kurtosis, Spectral Skewness, Spectral Spread</h2>
+                    <div class="columns is-mobile is-centered">
+                        <div class="column is-half">
+                            <div class="buttons">
+                                <button id="dist_shape_offline" class="button is-primary">Offline</button>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="buttons">
+                                <button class="button is-primary">Primary</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <p id="results_dist_shape"></p>
+                    </div>
+                </div>
+                <div class="notification">
+                    <h1 class="title">Zero Crossing Rate</h1>
+                    <div class="columns is-mobile is-centered">
+                        <div class="column is-half">
+                            <div class="buttons">
+                                <button id="zcr_offline" class="button is-primary">Offline</button>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="buttons">
+                                <button class="button is-primary">Primary</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <p id="results_zcr"></p>
+                    </div>
+                </div>
+                <div class="notification">
+                    <h1 class="title">Spectral Flatness Benchmarking</h1>
+                    <div class="columns is-mobile is-centered">
+                        <div class="column is-half">
+                            <div class="buttons">
+                                <button id="spectral_flatness_offline" class="button is-primary">Offline</button>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="buttons">
+                                <button class="button is-primary">Primary</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <p id="results_spectral_flatness"></p>
+                    </div>
+                </div>
+                <div class="notification">
+                    <h1 class="title">Power Spectrum</h1>
+                    <div class="columns is-mobile is-centered">
+                        <div class="column is-half">
+                            <div class="buttons">
+                                <button id="powerSpectrum_offline" class="button is-primary">Offline</button>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="buttons">
+                                <button class="button is-primary">Primary</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <p id="results_power_spectrum"></p>
+                    </div>
+                </div>
+                <div class="notification">
+                    <h1 class="title">Spectral Flatness</h1>
+                    <div class="columns is-mobile is-centered">
+                        <div class="column is-half">
+                            <div class="buttons">
+                                <button id="spectral_flatness_offline" class="button is-primary">Offline</button>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="buttons">
+                                <button class="button is-primary">Primary</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <p id="results_spectral_flatness"></p>
+                    </div>
+                </div>
+                <div class="notification">
+                    <h1 class="title">Spectral Centroid</h1>
+                    <div class="columns is-mobile is-centered">
+                        <div class="column is-half">
+                            <div class="buttons">
+                                <button id="spectral_centroid_offline" class="button is-primary">Offline</button>
+                            </div>
+                        </div>
+                        <div class="column">
+                            <div class="buttons">
+                                <button class="button is-primary">Primary</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <p id="results_spectral_centroid"></p>
+                    </div>
+                </div>
             </div>
-            <div class="notification">
-               <h1 class="title">Zero Crossing Rate</h1>
-               <div class="columns is-mobile is-centered">
-                  <div class="column is-half">
-                     <div class="buttons">
-                        <button id="zcr_offline" class="button is-primary">Offline</button>
-                     </div>
-                  </div>
-                  <div class="column">
-                     <div class="buttons">
-                        <button class="button is-primary">Primary</button>
-                     </div>
-                  </div>
-               </div>
-               <div>
-                  <p id="results_zcr"></p>
-               </div>
+        </section>
+        <footer class="footer">
+            <div class="content has-text-centered">
+                <p>
+                    <strong>Sonosuite</strong> by <a target="_blank" href="https://luisjoglar.com">Luis Joglar</a> and <a target="_blank" href="">Alex Albàs</a>. The source code is under
+                    <a href="http://opensource.org/licenses/mit-license.php">MIT</a> license.
+                </p>
+                <p> 
+                    Using <a target="_blank" href="https://mtg.github.io/essentia.js">essentia.js</a> and <a target="_blank" href="https://meyda.js.org">Meyda</a> 
+                </p>
             </div>
-            <div class="notification">
-               <h1 class="title">Spectral Flatness Benchmarking</h1>
-               <div class="columns is-mobile is-centered">
-                  <div class="column is-half">
-                     <div class="buttons">
-                        <button id="spectral_flatness_offline" class="button is-primary">Offline</button>
-                     </div>
-                  </div>
-                  <div class="column">
-                     <div class="buttons">
-                        <button class="button is-primary">Primary</button>
-                     </div>
-                  </div>
-               </div>
-               <div>
-                  <p id="results_spectral_flatness"></p>
-               </div>
-            </div>
-			<div class="notification">
-				<h1 class="title">Power Spectrum</h1>
-	            <div class="columns is-mobile is-centered">
-					<div class="column is-half">
-					<div class="buttons">
-						<button id="powerSpectrum_offline" class="button is-primary">Offline</button>
-					</div>
-					</div>
-					<div class="column">
-						<div class="buttons">
-							<button class="button is-primary">Primary</button>
-						</div>
-					</div>
-				</div>
-	            <div>
-					<p id="results_power_spectrum"></p>
-	            </div>
-			</div>
-            <div class="notification">
-				<h1 class="title">Spectral Flatness</h1>
-				<div class="columns is-mobile is-centered">
-					<div class="column is-half">
-						<div class="buttons">
-							<button id="spectral_flatness_offline" class="button is-primary">Offline</button>
-						</div>
-					</div>
-					<div class="column">
-						<div class="buttons">
-							<button class="button is-primary">Primary</button>
-						</div>
-					</div>
-				</div>
-				<div>
-					<p id="results_spectral_flatness"></p>
-				</div>
-			</div>
-            <div class="notification">
-				<h1 class="title">Spectral Centroid</h1>
-				<div class="columns is-mobile is-centered">
-					<div class="column is-half">
-						<div class="buttons">
-							<button id="spectral_centroid_offline" class="button is-primary">Offline</button>
-						</div>
-					</div>
-					<div class="column">
-						<div class="buttons">
-							<button class="button is-primary">Primary</button>
-						</div>
-					</div>
-				</div>
-				<div>
-					<p id="results_spectral_centroid"></p>
-				</div>
-			</div>
-         </div>  
-      </section>
-      <footer class="footer">
-         <div class="content has-text-centered">
-            <p>
-               <strong>Sonosuite</strong> by <a href="https://jgthms.com">Luis Joglar</a> and <a href="">Alex Albàs</a>. The source code is licensed
-               <a href="http://opensource.org/licenses/mit-license.php">MTG</a>.
-            </p>
-         </div>
-      </footer>
-      <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
-      <script src="https://unpkg.com/essentia.js@0.0.9/dist/essentia-wasm.web.js"></script>
-      <script src="https://unpkg.com/essentia.js@0.0.9/dist/essentia.js-core.js"></script>
-      <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/benchmark/2.1.4/benchmark.js"></script>    
-      <script src="dist/bundle.js"></script>
-   </body>
+        </footer>
+        <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+        <script src="https://unpkg.com/essentia.js@0.0.9/dist/essentia-wasm.web.js"></script>
+        <script src="https://unpkg.com/essentia.js@0.0.9/dist/essentia.js-core.js"></script>
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/benchmark/2.1.4/benchmark.js"></script>    
+        <script src="dist/bundle.js"></script>
+    </body>
 </html>

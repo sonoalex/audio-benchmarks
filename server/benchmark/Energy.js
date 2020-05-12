@@ -4,8 +4,8 @@ let fs = require('fs');
 let path = require('path');
 let Benchmark = require('benchmark');
 
-const BUFFER_SIZE = 512;
-const BUFFER_SIZE_MEYDA = 512;
+const FRAME_SIZE = 2048;
+const HOP_SIZE = 1024;
 const audioFilePath = path.join(__dirname, '..', '..','audio', 'track.wav');
 
 fs.readFile(audioFilePath, (err, data) => {
@@ -15,21 +15,18 @@ fs.readFile(audioFilePath, (err, data) => {
 
     // add tests
     suite.add('Meyda#Energy', () => {
-        
-        for (let i = 0; i < audioBuffer.length/BUFFER_SIZE_MEYDA; i++) {
-            Meyda.bufferSize = BUFFER_SIZE_MEYDA;
-            let bufferChunk = audioBuffer.slice(BUFFER_SIZE_MEYDA*i, BUFFER_SIZE_MEYDA*i + BUFFER_SIZE_MEYDA);
+        for (let i = 0; i < audioBuffer.length/HOP_SIZE; i++) {
+            Meyda.bufferSize = FRAME_SIZE;
+            let frame = audioBuffer.slice(HOP_SIZE*i, HOP_SIZE*i + FRAME_SIZE);
             
-            if (bufferChunk.length !== BUFFER_SIZE_MEYDA) {
-                bufferChunk = Buffer.concat([bufferChunk], BUFFER_SIZE_MEYDA);
+            if (frame.length !== FRAME_SIZE) {
+                frame = Buffer.concat([frame], FRAME_SIZE);
             }
-
-            Meyda.extract(['energy'], bufferChunk);
+            Meyda.extract(['energy'], frame);
         }
-    }).add('Essentia#Energy', () => {        
-        for (let i = 0; i < audioBuffer.length/BUFFER_SIZE; i++){
-            let bufferChunk = audioBuffer.slice(BUFFER_SIZE*i, BUFFER_SIZE*i + BUFFER_SIZE);
-            essentia.Energy(essentia.arrayToVector(bufferChunk));
+    }).add('Essentia#Energy', () => {
+        for (let frame in essentia.FrameGenerator(audioBuffer, FRAME_SIZE, HOP_SIZE)){
+            essentia.Energy(essentia.arrayToVector(frame));
         }
     })
     // add listeners
