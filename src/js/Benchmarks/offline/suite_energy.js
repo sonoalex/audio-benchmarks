@@ -15,7 +15,17 @@ export default function spectral_rolloff(essentia, Meyda, audioURL) {
     const ess_table = document.querySelector('#energy #essentia_results #table');
     const ess_plot = document.querySelector('#energy #essentia_results #plot');
     const stack_plot = document.querySelector('#energy #essentia_results #plot_stack');
-
+    const repetitionsInput = document.getElementById('repetitions');
+    let repetitions = repetitionsInput.value;
+    
+    const options = repetitions ? 
+        {
+            minSamples: repetitions,
+            initCount: 1,
+            minTime: -Infinity,
+            maxTime: -Infinity,
+        } 
+        : {};
 
 
     getFile(audioContext, audioURL).then((audioBuffer) => {
@@ -34,12 +44,12 @@ export default function spectral_rolloff(essentia, Meyda, audioURL) {
                 }
                 Meyda.extract(['energy'], frame);
             }
-        })
+        }, options)
         .add('Essentia#ENERGY', () => {
             for (let frame in essentia.FrameGenerator(audioBuffer.getChannelData(0), FRAME_SIZE, HOP_SIZE)){
                 essentia.Energy(essentia.arrayToVector(frame));
             }
-        })
+        }, options)
         // add listeners
         .on('cycle', function(event) {
             console.log(String(event.target));

@@ -1,4 +1,4 @@
-let Meyda = require('Meyda');
+let Meyda = require('meyda');
 let essentia = require('essentia.js');
 let fs = require('fs');
 let path = require('path');
