@@ -15,12 +15,17 @@ export default function rms(essentia, Meyda, audioURL) {
     const ess_table = document.querySelector('#rms #essentia_results #table');
     const ess_plot = document.querySelector('#rms #essentia_results #plot');
     const stack_plot = document.querySelector('#rms #essentia_results #plot_stack');
-    const options = {
-        minSamples: 100,
-        initCount: 1,
-        minTime: -Infinity,
-        maxTime: -Infinity,
-    }
+    const repetitionsInput = document.getElementById('repetitions');
+    let repetitions = repetitionsInput.value;
+    
+    const options = repetitions ? 
+        {
+            minSamples: repetitions,
+            initCount: 1,
+            minTime: -Infinity,
+            maxTime: -Infinity,
+        } 
+        : {};
 
     getFile(audioContext, audioURL).then((audioBuffer) => {
         const suite = new Benchmark.Suite('RMS');

@@ -1,6 +1,7 @@
 // Webpack uses this to work with directories
 const path = require('path');
 require("babel-polyfill");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 // This is main configuration object.
 // Here you write different options and tell Webpack what to do
@@ -16,6 +17,9 @@ module.exports = {
     filename: 'bundle.js'
   },
   watch: true,
+  plugins: [
+    new MiniCssExtractPlugin(),
+  ],
   module: {
     rules: [
         {
@@ -31,6 +35,10 @@ module.exports = {
                 presets: ['@babel/preset-env']
               }
             }
+        },
+        {
+            test: /\.css$/,
+            use: [MiniCssExtractPlugin.loader, 'css-loader']
           }
     ]
   },

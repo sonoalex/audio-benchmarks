@@ -3,13 +3,26 @@
    <head>
       <title>Essentia's Benchmarking</title>
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css">
+      <link rel="stylesheet" href="dist/main.css">
    </head>
    <body>
       <section class="section">
-		<h1 class="title">Algorithms time Benchmarking</h1>
-		<h2 class="subtitle">
-			Audio comparison between  <strong>Meyda.js</strong> and <strong>essentia.js</strong>
-		</h2>
+         <div class="container center padding_20">
+               <h1 class="title">Algorithms time Benchmarking</h1>
+               <h2 class="subtitle">
+                  Audio comparison between  <strong>Meyda.js</strong> and <strong>essentia.js</strong>
+               </h2>
+         </div>
+         <div class="container padding_20">
+            <h3 class="title">
+               Options
+            </h3>
+            <div class="field">
+                  <div class="control">
+                     Repetitions:
+                    <input class="input" type="tel" placeholder="Repetitions" id="repetitions" maxlength="4">
+                  </div>
+         </div>
 		<div class="container" id="rms">
             <div class="notification">
 				<h1 class="title">RMS</h1>

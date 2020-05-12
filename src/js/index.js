@@ -11,6 +11,10 @@ import spectral_flatness from './Benchmarks/offline/suite_spectral_flatness';
 import spectral_centroid from './Benchmarks/offline/suite_spectral_centroid';
 //import rms_realtime from './Benchmarks/realtime/suite_rms_realtime';
 
+// Import CSS
+import "../../src/css/styles.css";
+
+
 // DOM ELEMENTS
 const RMSButton = document.getElementById('rms_offline');
 const LoudnessButton = document.getElementById('loudness_offline');
