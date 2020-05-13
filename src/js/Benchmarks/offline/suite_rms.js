@@ -44,8 +44,9 @@ export default function rms(essentia, Meyda, audioURL) {
             }
         }, options)
         .add('Essentia#RMS', () => {
-            for (let frame in essentia.FrameGenerator(audioBuffer.getChannelData(0), FRAME_SIZE, HOP_SIZE)){
-                essentia.RMS(essentia.arrayToVector(frame));
+            const frames = essentia.FrameGenerator(audioBuffer.getChannelData(0), FRAME_SIZE, HOP_SIZE);
+            for (var i = 0; i < frames.size(); i++){
+                essentia.RMS(frames.get(i));
             }
         },options)
         // add listeners

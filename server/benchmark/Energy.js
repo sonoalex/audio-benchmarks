@@ -36,9 +36,14 @@ fs.readFile(audioFilePath, (err, data) => {
         }
     }, options)
     .add('Essentia#Energy', () => {
-        for (let frame in essentia.FrameGenerator(audioBuffer, FRAME_SIZE, HOP_SIZE)){
+        for (let i = 0; i < audioBuffer.length/HOP_SIZE; i++){
+            let frame = audioBuffer.slice(HOP_SIZE*i, HOP_SIZE*i + FRAME_SIZE);
             essentia.Energy(essentia.arrayToVector(frame));
         }
+        // const frames = essentia.FrameGenerator(audioBuffer, FRAME_SIZE, HOP_SIZE);
+        // for (var i = 0; i < frames.size(); i++){
+        //     essentia.Energy(frames.get(i));
+        // }
     }, options)
     // add listeners
     .on('cycle', function(event) {
