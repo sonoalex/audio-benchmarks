@@ -30,7 +30,7 @@ const SpectralCentroidButton = document.getElementById('spectral_centroid_offlin
 let essentia;
 loadEssentia();
 
-let audioURL = '/audio/track.wav';
+let audioURL = '/audio/mozart_c_major_30sec.wav';
 
 /**
  * START HERE WITH ALL SUITES
