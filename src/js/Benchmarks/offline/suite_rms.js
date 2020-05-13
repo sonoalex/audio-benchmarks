@@ -30,6 +30,7 @@ export default function rms(essentia, Meyda, audioURL) {
     getFile(audioContext, audioURL).then((audioBuffer) => {
         const suite = new Benchmark.Suite('RMS');
 
+        // add tests
         suite.add('Meyda#RMS', () => {
             for (let i = 0; i < audioBuffer.length/HOP_SIZE; i++) {
                 Meyda.bufferSize = FRAME_SIZE;
@@ -96,6 +97,7 @@ export default function rms(essentia, Meyda, audioURL) {
             }
             downloadJson(resultsObj, "rms.json");
         })
+        // run async
         .run({ 'async': true });       
     });  
 }

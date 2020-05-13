@@ -27,7 +27,6 @@ export default function spectral_rolloff(essentia, Meyda, audioURL) {
         } 
         : {};
 
-
     getFile(audioContext, audioURL).then((audioBuffer) => {
         const suite = new Benchmark.Suite('ENERGY');
 
