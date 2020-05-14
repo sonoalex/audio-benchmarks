@@ -47,7 +47,7 @@ fs.readFile(audioFilePath, (err, data) => {
     })
     
     .on('complete', function() {
-        console.log(this);
+        // console.log(this);
         console.log('Fastest is ' + this.filter('fastest').map('name'));
 
         const resultsObj = {
