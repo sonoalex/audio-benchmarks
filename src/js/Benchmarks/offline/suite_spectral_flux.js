@@ -33,7 +33,6 @@ export default function spectralFlux(essentia, Meyda, audioURL) {
 
         // add tests
         suite.add('Meyda#SPECTRAL_FLUX', () => {
-            console.log(Meyda);
             for (let i = 0; i < audioBuffer.length/HOP_SIZE; i++) {
                 Meyda.bufferSize = FRAME_SIZE;
                 let frame = audioBuffer.getChannelData(0).slice(HOP_SIZE*i, HOP_SIZE*i + FRAME_SIZE);
