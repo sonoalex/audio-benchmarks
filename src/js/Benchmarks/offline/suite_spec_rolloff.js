@@ -1,37 +1,53 @@
 import getFile from '../../utils/getFile';
+import downloadJson from '../../utils/downloadJson';
+import violinDistributionPlot from '../../utils/violinDistributionPlot';
+import {showResultsTable} from '../../utils/showResultsTable';
 
 export default function spectral_rolloff(essentia, Meyda, audioURL) {
 
     const audioContext = new AudioContext();
-    const BUFFER_SIZE = 512;
-    const BUFFER_SIZE_MEYDA = 512;
-
-    const p = document.getElementById('results_spec_rolloff');
-    const SpecRollofButton = document.getElementById('spec_rollof_offline');
+    const FRAME_SIZE = 2048;
+    const HOP_SIZE = 1024;
+    const SpecRollofButton = document.querySelector('#spec_rolloff #start_offline');
+    const p = document.querySelector('#spec_rolloff #results');
+    const down_elem = document.querySelector('#spec_rolloff #download_results');
+    const meyda_table = document.querySelector('#spec_rolloff #meyda_results #table');
+    const meyda_plot = document.querySelector('#spec_rolloff #meyda_results #plot');
+    const ess_table = document.querySelector('#spec_rolloff #essentia_results #table');
+    const ess_plot = document.querySelector('#spec_rolloff #essentia_results #plot');
+    const stack_plot = document.querySelector('#spec_rolloff #essentia_results #plot_stack');
+    const repetitionsInput = document.getElementById('repetitions');
+    let repetitions = repetitionsInput.value;
+    const options = repetitions ?
+    {
+        minSamples: repetitions,
+        initCount: 1,
+        minTime: -Infinity,
+        maxTime: -Infinity,
+    }
+    : {};
 
     getFile(audioContext, audioURL).then((audioBuffer) => {
         const suite = new Benchmark.Suite('SPECTRAL_ROLLOFF');
 
         // add tests
         suite.add('Meyda#SPEC_ROLLOFF', () => {
-            
-            for (let i = 0; i < audioBuffer.length/BUFFER_SIZE_MEYDA; i++) {
-                Meyda.bufferSize = BUFFER_SIZE_MEYDA;
-                let bufferChunk = audioBuffer.getChannelData(0).slice(BUFFER_SIZE_MEYDA*i, BUFFER_SIZE_MEYDA*i + BUFFER_SIZE_MEYDA);
-                let lastBuffer;
-                
-                if (bufferChunk.length !== BUFFER_SIZE_MEYDA) {
-                    lastBuffer = new Float32Array(BUFFER_SIZE_MEYDA);
-                    audioBuffer.copyFromChannel(lastBuffer, 0, BUFFER_SIZE_MEYDA*i);
-                    bufferChunk = lastBuffer;
+            for (let i = 0; i < audioBuffer.length/HOP_SIZE; i++) {
+                Meyda.bufferSize = FRAME_SIZE;
+                let frame = audioBuffer.getChannelData(0).slice(HOP_SIZE*i, HOP_SIZE*i + FRAME_SIZE);
+                let lastFrame;
+                if (frame.length !== FRAME_SIZE) {
+                    lastFrame = new Float32Array(FRAME_SIZE);
+                    audioBuffer.copyFromChannel(lastFrame, 0, HOP_SIZE*i);
+                    frame = lastFrame;
                 }
-
-                Meyda.extract(['spectralRolloff'], bufferChunk);
+                Meyda.extract(['spectralRolloff'], frame);
             }
         }).add('Essentia#SPEC_ROLLOFF', () => {        
-            for (let i = 0; i < audioBuffer.length/BUFFER_SIZE; i++){
-                let bufferChunk = audioBuffer.getChannelData(0).slice(BUFFER_SIZE*i, BUFFER_SIZE*i + BUFFER_SIZE);
-                essentia.RollOff(essentia.arrayToVector(bufferChunk));  
+            const frames = essentia.FrameGenerator(audioBuffer.getChannelData(0), FRAME_SIZE, HOP_SIZE);
+            for (var i = 0; i < frames.size(); i++){
+                const frame_windowed = essentia.Windowing(frames.get(i),true, FRAME_SIZE);
+                essentia.RollOff(frame_windowed['frame']);
             }
         })
         // add listeners
@@ -50,6 +66,36 @@ export default function spectral_rolloff(essentia, Meyda, audioURL) {
             p.textContent = 'Fastest is ' + this.filter('fastest').map('name');
             SpecRollofButton.classList.remove('is-loading');
             SpecRollofButton.disable = false;
+
+            showResultsTable(meyda_table, this[0].stats);
+            showResultsTable(ess_table, this[1].stats);
+
+            violinDistributionPlot(meyda_plot, {0:["meyda", this[0].stats.sample, "green"]}, "Time distribution Spectral RollOff - Meyda");
+            violinDistributionPlot(ess_plot, {0:["essentia.js",this[1].stats.sample, "red"]}, "Time distribution Spectral RollOff - Essentia");
+            violinDistributionPlot(stack_plot, {0:["meyda", this[0].stats.sample, "green"], 1:["essentia.js", this[1].stats.sample, "red"]},
+                                     "Time distribution Spectral RollOff - Stack");
+
+            const resultsObj = {
+                "meyda": {
+                    "mean": this[0].stats.mean,
+                    "moe": this[0].stats.moe,
+                    "rme": this[0].stats.rme,
+                    "sem": this[0].stats.sem,
+                    "deviation": this[0].stats.deviation,
+                    "variance": this[0].stats.variance,
+                    "execution times": this[0].stats.sample
+                },
+                "essentia": {
+                    "mean": this[1].stats.mean,
+                    "moe": this[1].stats.moe,
+                    "rme": this[1].stats.rme,
+                    "sem": this[1].stats.sem,
+                    "deviation": this[1].stats.deviation,
+                    "variance": this[1].stats.variance,
+                    "execution times": this[1].stats.sample
+                }
+            }
+            downloadJson(resultsObj, "spectral_rolloff.json", down_elem);
         })
         // run async
         .run({ 'async': true });       
