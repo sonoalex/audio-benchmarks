@@ -1,37 +1,54 @@
 import getFile from '../../utils/getFile';
+import downloadJson from '../../utils/downloadJson';
+import violinDistributionPlot from '../../utils/violinDistributionPlot';
+import {showResultsTable} from '../../utils/showResultsTable';
 
 export default function loudness(essentia, Meyda, audioURL) {
 
     const audioContext = new AudioContext();
-    const BUFFER_SIZE = 512;
-    const BUFFER_SIZE_MEYDA = 512;
+    const FRAME_SIZE = 2048;
+    const HOP_SIZE = 1024;
+    const LoudnessBtn = document.querySelector('#loudness #start_offline');
+    const p = document.querySelector('#loudness #results');
+    const down_elem = document.querySelector('#loudness #download_results');
+    const meyda_table = document.querySelector('#loudness #meyda_results #table');
+    const meyda_plot = document.querySelector('#loudness #meyda_results #plot');
+    const ess_table = document.querySelector('#loudness #essentia_results #table');
+    const ess_plot = document.querySelector('#loudness #essentia_results #plot');
+    const stack_plot = document.querySelector('#loudness #essentia_results #plot_stack');
+    const repetitionsInput = document.getElementById('repetitions');
+    let repetitions = repetitionsInput.value;
 
-    const p = document.getElementById('results_loudness');
-    const loudnessBtn = document.getElementById('loudness_offline');
+    const options = repetitions ?
+        {
+            minSamples: repetitions,
+            initCount: 1,
+            minTime: -Infinity,
+            maxTime: -Infinity,
+        }
+        : {};
 
     getFile(audioContext, audioURL).then((audioBuffer) => {
         const suite = new Benchmark.Suite('LOUDNESS');
 
         // add tests
         suite.add('Meyda#LOUDNESS', () => {
-            
-            for (let i = 0; i < audioBuffer.length/BUFFER_SIZE_MEYDA; i++) {
-                Meyda.bufferSize = BUFFER_SIZE_MEYDA;
-                let bufferChunk = audioBuffer.getChannelData(0).slice(BUFFER_SIZE_MEYDA*i, BUFFER_SIZE_MEYDA*i + BUFFER_SIZE_MEYDA);
-                let lastBuffer;
-                
-                if (bufferChunk.length !== BUFFER_SIZE_MEYDA) {
-                    lastBuffer = new Float32Array(BUFFER_SIZE_MEYDA);
-                    audioBuffer.copyFromChannel(lastBuffer, 0, BUFFER_SIZE_MEYDA*i);
-                    bufferChunk = lastBuffer;
+            for (let i = 0; i < audioBuffer.length/HOP_SIZE; i++) {
+                Meyda.bufferSize = FRAME_SIZE;
+                let frame = audioBuffer.getChannelData(0).slice(HOP_SIZE*i, HOP_SIZE*i + FRAME_SIZE);
+                let lastFrame;
+                if (frame.length !== FRAME_SIZE) {
+                    lastFrame = new Float32Array(FRAME_SIZE);
+                    audioBuffer.copyFromChannel(lastFrame, 0, HOP_SIZE*i);
+                    frame = lastFrame;
                 }
-
-                Meyda.extract(['loudness'], bufferChunk);
+                Meyda.extract(['loudness'], frame);
             }
         }).add('Essentia#LOUDNESS', () => {
-            for (let i = 0; i < audioBuffer.length/BUFFER_SIZE; i++){
-                let bufferChunk = audioBuffer.getChannelData(0).slice(BUFFER_SIZE*i, BUFFER_SIZE*i + BUFFER_SIZE);
-                essentia.Loudness(essentia.arrayToVector(bufferChunk));
+            const frames = essentia.FrameGenerator(audioBuffer.getChannelData(0), FRAME_SIZE, HOP_SIZE);
+            for (var i = 0; i < frames.size(); i++){
+                var frame_windowed = essentia.Windowing(frames.get(i),true, FRAME_SIZE);
+                essentia.BarkBands(essentia.Spectrum(frame_windowed['frame'])['spectrum'], 24);
             }
         })
         // add listeners
@@ -40,16 +57,60 @@ export default function loudness(essentia, Meyda, audioURL) {
             console.log('New Cycle!');
         })
         .on('start', function() {
-            loudnessBtn.classList.add('is-loading');
-            loudnessBtn.disable = true;
+            LoudnessBtn.classList.add('is-loading');
+            LoudnessBtn.disable = true;
         })
         .on('complete', function() {
             console.log(this);
             console.log('Fastest is ' + this.filter('fastest').map('name'));
             // TODO: Here attach to the DOM
             p.textContent = 'Fastest is ' + this.filter('fastest').map('name');
-            loudnessBtn.classList.remove('is-loading');
-            loudnessBtn.disable = false;
+            LoudnessBtn.classList.remove('is-loading');
+            LoudnessBtn.disable = false;
+
+            showResultsTable(meyda_table, this[0].stats);
+            showResultsTable(ess_table, this[1].stats);
+
+            violinDistributionPlot(meyda_plot, {0:["meyda", this[0].stats.sample, "green"]}, "Time distribution Loudness - Meyda");
+            violinDistributionPlot(ess_plot, {0:["essentia.js",this[1].stats.sample, "red"]}, "Time distribution Loudness - Essentia");
+            violinDistributionPlot(stack_plot, {0:["meyda", this[0].stats.sample, "green"], 1:["essentia.js", this[1].stats.sample, "red"]},
+                                     "Time distribution Loudness - Stack");
+
+            const resultsObj = {
+                "meyda": {
+                    "mean": this[0].stats.mean,
+                    "moe": this[0].stats.moe,
+                    "rme": this[0].stats.rme,
+                    "sem": this[0].stats.sem,
+                    "deviation": this[0].stats.deviation,
+                    "variance": this[0].stats.variance,
+                    "execution times": this[0].stats.sample,
+                    "cycle": this[0].times.cycle,
+                    "elapsed": this[0].times.elapsed,
+                    "period": this[0].times.period,
+                    "timeStamp": this[0].times.timeStamp,
+                    "count": this[0].count,
+                    "cycles": this[0].cycles,
+                    "hz": this[0].hz
+                },
+                "essentia": {
+                    "mean": this[1].stats.mean,
+                    "moe": this[1].stats.moe,
+                    "rme": this[1].stats.rme,
+                    "sem": this[1].stats.sem,
+                    "deviation": this[1].stats.deviation,
+                    "variance": this[1].stats.variance,
+                    "execution times": this[1].stats.sample,
+                    "cycle": this[1].times.cycle,
+                    "elapsed": this[1].times.elapsed,
+                    "period": this[1].times.period,
+                    "timeStamp": this[1].times.timeStamp,
+                    "count": this[1].count,
+                    "cycles": this[1].cycles,
+                    "hz": this[1].hz
+                }
+            }
+            downloadJson(resultsObj, "loudness.json", down_elem);
         })
         // run async
         .run({ 'async': true });

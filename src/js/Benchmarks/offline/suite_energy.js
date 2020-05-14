@@ -18,14 +18,14 @@ export default function energy(essentia, Meyda, audioURL) {
     const stack_plot = document.querySelector('#energy #essentia_results #plot_stack');
     const repetitionsInput = document.getElementById('repetitions');
     let repetitions = repetitionsInput.value;
-    
-    const options = repetitions ? 
+
+    const options = repetitions ?
         {
             minSamples: repetitions,
             initCount: 1,
             minTime: -Infinity,
             maxTime: -Infinity,
-        } 
+        }
         : {};
 
     getFile(audioContext, audioURL).then((audioBuffer) => {
