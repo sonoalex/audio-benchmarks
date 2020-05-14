@@ -32,13 +32,14 @@ fs.readFile(audioFilePath, (err, data) => {
             }
             Meyda.extract(['spectralFlatness'], frame);
         }
-    }).add('Essentia#SpectralFlatness', () => {        
+    }, options)
+    .add('Essentia#SpectralFlatness', () => {        
         for (let i = 0; i < audioBuffer.length/HOP_SIZE; i++){
             let frame = audioBuffer.slice(HOP_SIZE*i, HOP_SIZE*i + FRAME_SIZE);
             var frame_windowed = essentia.Windowing(essentia.arrayToVector(frame),true, FRAME_SIZE);
             essentia.Flatness(essentia.Spectrum(frame_windowed['frame'])['spectrum']);
         }
-    })
+    }, options)
     // add listeners
     .on('cycle', function(event) {
         console.log(String(event.target));

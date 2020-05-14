@@ -43,13 +43,14 @@ export default function spectral_rolloff(essentia, Meyda, audioURL) {
                 }
                 Meyda.extract(['spectralRolloff'], frame);
             }
-        }).add('Essentia#SPEC_ROLLOFF', () => {        
+        }, options)
+        .add('Essentia#SPEC_ROLLOFF', () => {        
             const frames = essentia.FrameGenerator(audioBuffer.getChannelData(0), FRAME_SIZE, HOP_SIZE);
             for (var i = 0; i < frames.size(); i++){
                 const frame_windowed = essentia.Windowing(frames.get(i),true, FRAME_SIZE);
                 essentia.RollOff(frame_windowed['frame']);
             }
-        })
+        }, options)
         // add listeners
         .on('cycle', function(event) {
             console.log(String(event.target));
