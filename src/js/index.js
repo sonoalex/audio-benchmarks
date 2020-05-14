@@ -10,6 +10,7 @@ import spectral_flatness from './Benchmarks/offline/suite_spectral_flatness';
 import spectral_flux from './Benchmarks/offline/suite_spectral_flux';
 import spectral_rolloff from './Benchmarks/offline/suite_spec_rolloff';
 import distribution_shape from './Benchmarks/offline/suite_distribution_shape';
+import mfcc from './Benchmarks/offline/suite_mfcc';
 import loudness from './Benchmarks/offline/suite_loudness';
 //import rms_realtime from './Benchmarks/realtime/suite_rms_realtime';
 
@@ -28,6 +29,7 @@ const SpectralFlatnessButton = document.querySelector('#spectral_flatness #start
 const SpectralFluxButton = document.querySelector('#spectral_flux #start_offline');
 const SpecRolloffButton = document.querySelector('#spec_rolloff #start_offline');
 const DistShapeButton = document.querySelector('#dist_shape #start_offline');
+const MFCCButton = document.querySelector('#mfcc #start_offline');
 const LoudnessButton = document.querySelector('#loudness #start_offline');
 
 //Custom Variables
@@ -50,6 +52,7 @@ SpectralFlatnessButton.addEventListener('click', () => spectral_flatness(essenti
 SpectralFluxButton.addEventListener('click', () =>  spectral_flux(essentia, Meyda, audioURL));
 SpecRolloffButton.addEventListener('click', () => spectral_rolloff(essentia, Meyda, audioURL));
 DistShapeButton.addEventListener('click', () => distribution_shape(essentia, Meyda, audioURL));
+MFCCButton.addEventListener('click', () => mfcc(essentia, Meyda, audioURL));
 LoudnessButton.addEventListener('click', () => loudness(essentia, Meyda, audioURL));
 
 function loadEssentia() {
