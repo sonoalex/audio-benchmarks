@@ -14,7 +14,7 @@ import mfcc from './Benchmarks/offline/suite_mfcc';
 import mel_bands from './Benchmarks/offline/suite_mel_bands';
 import loudness from './Benchmarks/offline/suite_loudness';
 import perceptual_spread from './Benchmarks/offline/suite_perceptual_spread';
-//import rms_realtime from './Benchmarks/realtime/suite_rms_realtime';
+import all_time_freq from './Benchmarks/offline/suite_all_time_domain_and_spectral_features';
 
 // Import CSS
 import "../../src/css/styles.css";
@@ -35,6 +35,7 @@ const MFCCButton = document.querySelector('#mfcc #start_offline');
 const MelBandsButton = document.querySelector('#mel_bands #start_offline');
 const LoudnessButton = document.querySelector('#loudness #start_offline');
 const PerceptualSpreadButton = document.querySelector('#perceptual_spread #start_offline');
+const AllTimeFreqButton = document.querySelector('#all_time_freq #start_offline');
 
 //Custom Variables
 let essentia;
@@ -60,6 +61,7 @@ MFCCButton.addEventListener('click', () => mfcc(essentia, Meyda, audioURL));
 MelBandsButton.addEventListener('click', () => mel_bands(essentia, Meyda, audioURL));
 LoudnessButton.addEventListener('click', () => loudness(essentia, Meyda, audioURL));
 PerceptualSpreadButton.addEventListener('click', () => perceptual_spread(essentia, Meyda, audioURL));
+AllTimeFreqButton.addEventListener('click', () => all_time_freq(essentia, Meyda, audioURL));
 
 function loadEssentia() {
     EssentiaModule().then( (EssentiaWasmModule) => {
