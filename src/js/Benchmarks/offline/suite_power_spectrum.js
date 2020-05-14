@@ -19,6 +19,15 @@ export default function power_spectrum(essentia, Meyda, audioURL) {
     const repetitionsInput = document.getElementById('repetitions');
     let repetitions = repetitionsInput.value;
 
+    const options = repetitions ?
+        {
+            minSamples: repetitions,
+            initCount: 1,
+            minTime: -Infinity,
+            maxTime: -Infinity,
+        }
+        : {};
+
     getFile(audioContext, audioURL).then((audioBuffer) => {
         const suite = new Benchmark.Suite('Power Spectrum');
 
