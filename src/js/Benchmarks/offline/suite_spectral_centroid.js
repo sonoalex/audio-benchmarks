@@ -18,14 +18,14 @@ export default function spectralCentroid(essentia, Meyda, audioURL) {
     const stack_plot = document.querySelector('#spectral_centroid #essentia_results #plot_stack');
     const repetitionsInput = document.getElementById('repetitions');
     let repetitions = repetitionsInput.value;
-    
-    const options = repetitions ? 
+
+    const options = repetitions ?
         {
             minSamples: repetitions,
             initCount: 1,
             minTime: -Infinity,
             maxTime: -Infinity,
-        } 
+        }
         : {};
 
     getFile(audioContext, audioURL).then((audioBuffer) => {
@@ -68,7 +68,6 @@ export default function spectralCentroid(essentia, Meyda, audioURL) {
             p.textContent = 'Fastest is ' + this.filter('fastest').map('name');
             SpectralCentroidButton.classList.remove('is-loading');
             SpectralCentroidButton.disable = false;
-
 
             showResultsTable(meyda_table, this[0].stats);
             showResultsTable(ess_table, this[1].stats);
