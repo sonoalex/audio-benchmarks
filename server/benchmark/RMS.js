@@ -6,8 +6,7 @@ let Benchmark = require('benchmark');
 
 const FRAME_SIZE = 2048;
 const HOP_SIZE = 1024;
-const audioFilePath = path.join(__dirname, '..', '..','audio', 'track.wav');
-
+const audioFilePath = path.join(__dirname, '..', '..','audio', 'mozart_c_major_30sec.wav');
 var options = {};
 if (process.argv[2] !== undefined){
     options = {

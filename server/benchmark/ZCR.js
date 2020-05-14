@@ -4,34 +4,41 @@ let fs = require('fs');
 let path = require('path');
 let Benchmark = require('benchmark');
 
-const BUFFER_SIZE = 512;
-const BUFFER_SIZE_MEYDA = 512;
-const audioFilePath = path.join(__dirname, '..', '..','audio', 'track.wav');
+const FRAME_SIZE = 2048;
+const HOP_SIZE = 1024;
+const audioFilePath = path.join(__dirname, '..', '..','audio', 'mozart_c_major_30sec.wav');
+var options = {};
+if (process.argv[2] !== undefined){
+    options = {
+            minSamples: process.argv[2],
+            initCount: 1,
+            minTime: -Infinity,
+            maxTime: -Infinity,
+            };
+}
 
 fs.readFile(audioFilePath, (err, data) => {
     if (err) throw err;
     let audioBuffer = data;
     const suite = new Benchmark.Suite('ZeroCrossing');
-
     // add tests
     suite.add('Meyda#ZeroCrossing', () => {
-        
-        for (let i = 0; i < audioBuffer.length/BUFFER_SIZE_MEYDA; i++) {
-            Meyda.bufferSize = BUFFER_SIZE_MEYDA;
-            let bufferChunk = audioBuffer.slice(BUFFER_SIZE_MEYDA*i, BUFFER_SIZE_MEYDA*i + BUFFER_SIZE_MEYDA);
+        for (let i = 0; i < audioBuffer.length/HOP_SIZE; i++) {
+            Meyda.bufferSize = FRAME_SIZE;
+            let frame = audioBuffer.slice(HOP_SIZE*i, HOP_SIZE*i + FRAME_SIZE);
             
-            if (bufferChunk.length !== BUFFER_SIZE_MEYDA) {
-                bufferChunk = Buffer.concat([bufferChunk], BUFFER_SIZE_MEYDA);
+            if (frame.length !== FRAME_SIZE) {
+                frame = Buffer.concat([frame], FRAME_SIZE);
             }
-
-            Meyda.extract(['zcr'], bufferChunk);
+            Meyda.extract(['zcr'], frame);
         }
-    }).add('Essentia#ZeroCrossing', () => {        
-        for (let i = 0; i < audioBuffer.length/BUFFER_SIZE; i++){
-            let bufferChunk = audioBuffer.slice(BUFFER_SIZE*i, BUFFER_SIZE*i + BUFFER_SIZE);
-            essentia.ZeroCrossingRate(essentia.arrayToVector(bufferChunk));
+    }, options)
+    .add('Essentia#ZeroCrossing', () => {        
+        for (let i = 0; i < audioBuffer.length/HOP_SIZE; i++){
+            let frame = audioBuffer.slice(HOP_SIZE*i, HOP_SIZE*i + FRAME_SIZE);
+            essentia.ZeroCrossingRate(essentia.arrayToVector(frame));
         }
-    })
+    }, options)
     // add listeners
     .on('cycle', function(event) {
         console.log(String(event.target));
@@ -40,6 +47,37 @@ fs.readFile(audioFilePath, (err, data) => {
     .on('complete', function() {
         //console.log(this);
         console.log('Fastest is ' + this.filter('fastest').map('name'));
+
+        const resultsObj = {
+            "meyda": {
+                "mean": this[0].stats.mean,
+                "moe": this[0].stats.moe,
+                "rme": this[0].stats.rme,
+                "sem": this[0].stats.sem,
+                "deviation": this[0].stats.deviation,
+                "variance": this[0].stats.variance,
+                "execution times": this[0].stats.sample
+            },
+            "essentia": {
+                "mean": this[1].stats.mean,
+                "moe": this[1].stats.moe,
+                "rme": this[1].stats.rme,
+                "sem": this[1].stats.sem,
+                "deviation": this[1].stats.deviation,
+                "variance": this[1].stats.variance,
+                "execution times": this[1].stats.sample
+            }
+        }
+
+        var json = JSON.stringify(resultsObj);
+        fs.writeFile('zcr_node.json', json, 'utf8', function (err) {
+            if (err) {
+                console.log("An error occured while writing rms JSON Object to File.");
+                return console.log(err);
+            }
+        console.log("zcr JSON file has been saved.");
+   
+        });
     })
     // run async
     .run({ 'async': true });       
