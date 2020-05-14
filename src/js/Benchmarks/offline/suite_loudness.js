@@ -44,13 +44,14 @@ export default function loudness(essentia, Meyda, audioURL) {
                 }
                 Meyda.extract(['loudness'], frame);
             }
-        }).add('Essentia#LOUDNESS', () => {
+        }, options)
+        .add('Essentia#LOUDNESS', () => {
             const frames = essentia.FrameGenerator(audioBuffer.getChannelData(0), FRAME_SIZE, HOP_SIZE);
             for (var i = 0; i < frames.size(); i++){
                 var frame_windowed = essentia.Windowing(frames.get(i),true, FRAME_SIZE);
                 essentia.BarkBands(essentia.Spectrum(frame_windowed['frame'])['spectrum'], 24);
             }
-        })
+        }, options)
         // add listeners
         .on('cycle', function(event) {
             console.log(String(event.target));

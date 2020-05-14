@@ -44,13 +44,14 @@ export default function power_spectrum(essentia, Meyda, audioURL) {
                 }
                 Meyda.extract(['powerSpectrum'], frame);
             }
-        }).add('Essentia#PowerSpectrum', () => {        
+        }, options)
+        .add('Essentia#PowerSpectrum', () => {
             const frames = essentia.FrameGenerator(audioBuffer.getChannelData(0), FRAME_SIZE, HOP_SIZE);
             for (var i = 0; i < frames.size(); i++){
                 const frame_windowed = essentia.Windowing(frames.get(i),true, FRAME_SIZE);
                 essentia.PowerSpectrum(frame_windowed['frame']);
             }
-        })
+        }, options)
         // add listeners
         .on('cycle', function(event) {
             console.log(String(event.target));

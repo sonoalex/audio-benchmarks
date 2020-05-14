@@ -44,13 +44,14 @@ export default function perceptual_spread(essentia, Meyda, audioURL) {
                 }
                 Meyda.extract(['perceptualSpread'], frame);
             }
-        }).add('Essentia#PERCEPTUAL_SPREAD', () => {
+        }, options)
+        .add('Essentia#PERCEPTUAL_SPREAD', () => {
             const frames = essentia.FrameGenerator(audioBuffer.getChannelData(0), FRAME_SIZE, HOP_SIZE);
             for (var i = 0; i < frames.size(); i++){
                 var frame_windowed = essentia.Windowing(frames.get(i),true, FRAME_SIZE);
                 essentia.Variance(essentia.BarkBands(essentia.Spectrum(frame_windowed['frame'])['spectrum'], 24)['bands']);
             }
-        })
+        }, options)
         // add listeners
         .on('cycle', function(event) {
             console.log(String(event.target));

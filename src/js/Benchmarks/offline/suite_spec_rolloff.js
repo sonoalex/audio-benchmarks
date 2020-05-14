@@ -48,7 +48,7 @@ export default function spectral_rolloff(essentia, Meyda, audioURL) {
             const frames = essentia.FrameGenerator(audioBuffer.getChannelData(0), FRAME_SIZE, HOP_SIZE);
             for (var i = 0; i < frames.size(); i++){
                 const frame_windowed = essentia.Windowing(frames.get(i),true, FRAME_SIZE);
-                essentia.RollOff(frame_windowed['frame']);
+                essentia.RollOff(essentia.Spectrum(frame_windowed['frame'])['spectrum']);
             }
         }, options)
         // add listeners

@@ -35,11 +35,6 @@ fs.readFile(audioFilePath, (err, data) => {
         }
     }, options)
     .add('Essentia#DistributionShape', () => {        
-        for (let i = 0; i < audioBuffer.length/BUFFER_SIZE; i++){
-            let bufferChunk = audioBuffer.slice(BUFFER_SIZE*i, BUFFER_SIZE*i + BUFFER_SIZE);
-            let centralMoments = essentia.CentralMoments(essentia.arrayToVector(bufferChunk));
-            essentia.DistributionShape(centralMoments.centralMoments);
-        }
         for (let i = 0; i < audioBuffer.length/HOP_SIZE; i++){
             let frame = audioBuffer.slice(HOP_SIZE*i, HOP_SIZE*i + FRAME_SIZE);
             var frame_windowed = essentia.Windowing(essentia.arrayToVector(frame),true, FRAME_SIZE);
