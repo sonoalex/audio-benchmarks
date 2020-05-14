@@ -1,15 +1,16 @@
 import getFile from '../../utils/getFile';
 import downloadJson from '../../utils/downloadJson';
 import violinDistributionPlot from '../../utils/violinDistributionPlot';
-import showResultsTable from '../../utils/showResultsTable';
+import {showResultsTable} from '../../utils/showResultsTable';
 
-export default function spectral_rolloff(essentia, Meyda, audioURL) {
+export default function energy(essentia, Meyda, audioURL) {
 
     const audioContext = new AudioContext();
     const FRAME_SIZE = 2048;
     const HOP_SIZE = 1024;
-    const EnergyButton = document.getElementById('energy_offline');
-    const p = document.getElementById('results_energy');
+    const EnergyButton = document.querySelector('#energy #start_offline');
+    const p = document.querySelector('#energy #results');
+    const down_elem = document.querySelector('#energy #download_results');
     const meyda_table = document.querySelector('#energy #meyda_results #table');
     const meyda_plot = document.querySelector('#energy #meyda_results #plot');
     const ess_table = document.querySelector('#energy #essentia_results #table');
@@ -95,8 +96,7 @@ export default function spectral_rolloff(essentia, Meyda, audioURL) {
                     "execution times": this[1].stats.sample
                 }
             }
-            downloadJson(resultsObj, "energy.json");
-            
+            downloadJson(resultsObj, "energy.json", down_elem);
         })
         // run async
         .run({ 'async': true });       

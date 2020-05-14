@@ -1,6 +1,5 @@
-function downloadJson(jsonObj, fileName){
+function downloadJson(jsonObj, fileName, downElem){
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(jsonObj));
-    var downElem = document.getElementById('download_results_rms');
     downElem.setAttribute("href", dataStr);
     downElem.setAttribute("download", fileName);
     downElem.click();

@@ -3,19 +3,19 @@ import downloadJson from '../../utils/downloadJson';
 import violinDistributionPlot from '../../utils/violinDistributionPlot';
 import {showResultsTable} from '../../utils/showResultsTable';
 
-export default function rms(essentia, Meyda, audioURL) {
+export default function amplitude_spectrum(essentia, Meyda, audioURL) {
 
     const audioContext = new AudioContext();
     const FRAME_SIZE = 2048;
     const HOP_SIZE = 1024;
-    const RMSButton = document.getElementById('#rms #start_offline');
-    const p = document.getElementById('#rms #results');
-    const down_elem = document.querySelector('#rms #download_results');
-    const meyda_table = document.querySelector('#rms #meyda_results #table');
-    const meyda_plot = document.querySelector('#rms #meyda_results #plot');
-    const ess_table = document.querySelector('#rms #essentia_results #table');
-    const ess_plot = document.querySelector('#rms #essentia_results #plot');
-    const stack_plot = document.querySelector('#rms #essentia_results #plot_stack');
+    const AmplitudeSpectralButton = document.querySelector('#amplitude_spectrum #start_offline');
+    const p = document.querySelector('#amplitude_spectrum #results');
+    const down_elem = document.querySelector('#amplitude_spectrum #download_results');
+    const meyda_table = document.querySelector('#amplitude_spectrum #meyda_results #table');
+    const meyda_plot = document.querySelector('#amplitude_spectrum #meyda_results #plot');
+    const ess_table = document.querySelector('#amplitude_spectrum #essentia_results #table');
+    const ess_plot = document.querySelector('#amplitude_spectrum #essentia_results #plot');
+    const stack_plot = document.querySelector('#amplitude_spectrum #essentia_results #plot_stack');
     const repetitionsInput = document.getElementById('repetitions');
     let repetitions = repetitionsInput.value;
     
@@ -29,10 +29,10 @@ export default function rms(essentia, Meyda, audioURL) {
         : {};
 
     getFile(audioContext, audioURL).then((audioBuffer) => {
-        const suite = new Benchmark.Suite('RMS');
+        const suite = new Benchmark.Suite('AMPLITUDE_SPECTRUM');
 
         // add tests
-        suite.add('Meyda#RMS', () => {
+        suite.add('Meyda#AMPLITUDE_SPECTRUM', () => {
             for (let i = 0; i < audioBuffer.length/HOP_SIZE; i++) {
                 Meyda.bufferSize = FRAME_SIZE;
                 let frame = audioBuffer.getChannelData(0).slice(HOP_SIZE*i, HOP_SIZE*i + FRAME_SIZE);
@@ -42,39 +42,40 @@ export default function rms(essentia, Meyda, audioURL) {
                     audioBuffer.copyFromChannel(lastFrame, 0, HOP_SIZE*i);
                     frame = lastFrame;
                 }
-                Meyda.extract(['rms'], frame);
+                Meyda.extract(['amplitude_spectrum'], frame);
             }
         }, options)
-        .add('Essentia#RMS', () => {
+        .add('Essentia#AMPLITUDE_SPECTRUM', () => {
             const frames = essentia.FrameGenerator(audioBuffer.getChannelData(0), FRAME_SIZE, HOP_SIZE);
             for (var i = 0; i < frames.size(); i++){
-                essentia.RMS(frames.get(i));
+                const frame_windowed = essentia.Windowing(frames.get(i),true, FRAME_SIZE);
+                essentia.Spectrum(frame_windowed['frame']);
             }
-        },options)
+        }, options)
         // add listeners
         .on('cycle', function(event) {
             console.log(String(event.target));
             console.log('New Cycle!');
         })
         .on('start', function() {
-            RMSButton.classList.add('is-loading');
-            RMSButton.disable = true;
+            AmplitudeSpectralButton.classList.add('is-loading');
+            AmplitudeSpectralButton.disable = true;
         })
         .on('complete', function() {
             console.log(this);
             console.log('Fastest is ' + this.filter('fastest').map('name'));
-            
+            // TODO: Here attach to the DOM -> SPIKE
             p.textContent = 'Fastest is ' + this.filter('fastest').map('name');
-            RMSButton.classList.remove('is-loading');
-            RMSButton.disable = false;
+            AmplitudeSpectralButton.classList.remove('is-loading');
+            AmplitudeSpectralButton.disable = false;
 
             showResultsTable(meyda_table, this[0].stats);
             showResultsTable(ess_table, this[1].stats);
 
-            violinDistributionPlot(meyda_plot, {0:["meyda", this[0].stats.sample, "green"]}, "Time distribution RMS - Meyda");
-            violinDistributionPlot(ess_plot, {0:["essentia.js",this[1].stats.sample, "red"]}, "Time distribution RMS - Essentia");
+            violinDistributionPlot(meyda_plot, {0:["meyda", this[0].stats.sample, "green"]}, "Time distribution Amplitude Spectrum - Meyda");
+            violinDistributionPlot(ess_plot, {0:["essentia.js",this[1].stats.sample, "red"]}, "Time distribution Amplitude Spectrum - Essentia");
             violinDistributionPlot(stack_plot, {0:["meyda", this[0].stats.sample, "green"], 1:["essentia.js", this[1].stats.sample, "red"]},
-                                     "Time distribution RMS - Stack");
+                                     "Time distribution Amplitude Spectrum - Stack");
 
             const resultsObj = {
                 "meyda": {
@@ -96,7 +97,8 @@ export default function rms(essentia, Meyda, audioURL) {
                     "execution times": this[1].stats.sample
                 }
             }
-            downloadJson(resultsObj, "energy.json", down_elem);
+            downloadJson(resultsObj, "amplitude_spectrum.json", down_elem);
+            
         })
         // run async
         .run({ 'async': true });       

@@ -1,15 +1,16 @@
 import getFile from '../../utils/getFile';
 import downloadJson from '../../utils/downloadJson';
 import violinDistributionPlot from '../../utils/violinDistributionPlot';
-import showResultsTable from '../../utils/showResultsTable';
+import {showResultsTable} from '../../utils/showResultsTable';
 
 export default function zcr(essentia, Meyda, audioURL) {
 
     const audioContext = new AudioContext();
     const FRAME_SIZE = 2048;
     const HOP_SIZE = 1024;
-    const ZCRButton = document.getElementById('zcr_offline');
-    const p = document.getElementById('results_zcr');
+    const ZCRButton = document.getElementById('#zcr #start_offline');
+    const p = document.getElementById('#zcr #results');
+    const down_elem = document.querySelector('#zcr #download_results');
     const meyda_table = document.querySelector('#zcr #meyda_results #table');
     const meyda_plot = document.querySelector('#zcr #meyda_results #plot');
     const ess_table = document.querySelector('#zcr #essentia_results #table');
@@ -95,8 +96,7 @@ export default function zcr(essentia, Meyda, audioURL) {
                     "execution times": this[1].stats.sample
                 }
             }
-            downloadJson(resultsObj, "zeroCrossingRate.json");
-
+            downloadJson(resultsObj, "energy.json", down_elem);
         })
         // run async
         .run({ 'async': true });       
