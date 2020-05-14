@@ -56,7 +56,14 @@ fs.readFile(audioFilePath, (err, data) => {
                 "sem": this[0].stats.sem,
                 "deviation": this[0].stats.deviation,
                 "variance": this[0].stats.variance,
-                "execution times": this[0].stats.sample
+                "execution times": this[0].stats.sample,
+                "cycle": this[0].times.cycle,
+                "elapsed": this[0].times.elapsed,
+                "period": this[0].times.period,
+                "timeStamp": this[0].times.timeStamp,
+                "count": this[0].count,
+                "cycles": this[0].cycles,
+                "hz": this[0].hz
             },
             "essentia": {
                 "mean": this[1].stats.mean,
@@ -65,7 +72,14 @@ fs.readFile(audioFilePath, (err, data) => {
                 "sem": this[1].stats.sem,
                 "deviation": this[1].stats.deviation,
                 "variance": this[1].stats.variance,
-                "execution times": this[1].stats.sample
+                "execution times": this[1].stats.sample,
+                "cycle": this[1].times.cycle,
+                "elapsed": this[1].times.elapsed,
+                "period": this[1].times.period,
+                "timeStamp": this[1].times.timeStamp,
+                "count": this[1].count,
+                "cycles": this[1].cycles,
+                "hz": this[1].hz
             }
         }
 
