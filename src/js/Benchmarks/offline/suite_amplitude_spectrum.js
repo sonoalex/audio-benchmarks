@@ -42,13 +42,13 @@ export default function amplitude_spectrum(essentia, Meyda, audioURL) {
                     audioBuffer.copyFromChannel(lastFrame, 0, HOP_SIZE*i);
                     frame = lastFrame;
                 }
-                Meyda.extract(['amplitude_spectrum'], frame);
+                Meyda.extract(['amplitudeSpectrum'], frame);
             }
         }, options)
         .add('Essentia#AMPLITUDE_SPECTRUM', () => {
             const frames = essentia.FrameGenerator(audioBuffer.getChannelData(0), FRAME_SIZE, HOP_SIZE);
             for (var i = 0; i < frames.size(); i++){
-                const frame_windowed = essentia.Windowing(frames.get(i),true, FRAME_SIZE);
+                var frame_windowed = essentia.Windowing(frames.get(i), true, FRAME_SIZE);
                 essentia.Spectrum(frame_windowed['frame']);
             }
         }, options)
