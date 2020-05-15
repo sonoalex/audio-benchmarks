@@ -15,6 +15,17 @@ import mel_bands from './Benchmarks/offline/suite_mel_bands';
 import loudness from './Benchmarks/offline/suite_loudness';
 import perceptual_spread from './Benchmarks/offline/suite_perceptual_spread';
 import all_time_freq from './Benchmarks/offline/suite_all_time_domain_and_spectral_features';
+import hpcp from './Benchmarks/offline/suite_hpcp';
+import key from './Benchmarks/offline/suite_key';
+import tuning_frequency from './Benchmarks/offline/suite_tuning_frequency';
+import onset from './Benchmarks/offline/suite_onset';
+import super_flux from './Benchmarks/offline/suite_super_flux';
+import beats_zapata from './Benchmarks/offline/suite_beats_zapata';
+import beats_degara from './Benchmarks/offline/suite_beats_degara';
+import ebur128 from './Benchmarks/offline/suite_loudnessEBUR128';
+import pyin from './Benchmarks/offline/suite_compute_pyin';
+import yin from './Benchmarks/offline/suite_compute_yin';
+import yin_fft from './Benchmarks/offline/suite_compute_yin_fft';
 
 // Import CSS
 import "../../src/css/styles.css";
@@ -36,6 +47,17 @@ const MelBandsButton = document.querySelector('#mel_bands #start_offline');
 const LoudnessButton = document.querySelector('#loudness #start_offline');
 const PerceptualSpreadButton = document.querySelector('#perceptual_spread #start_offline');
 const AllTimeFreqButton = document.querySelector('#all_time_freq #start_offline');
+const HPCPButton = document.querySelector('#hpcp #start_offline');
+const KeyButton = document.querySelector('#key #start_offline');
+const TuningFreqButton = document.querySelector('#tuning_frequency #start_offline');
+const OnsetButton = document.querySelector('#onset #start_offline');
+const SuperFluxButton = document.querySelector('#super_flux #start_offline');
+const BeatsZapataButton = document.querySelector('#beats_zapata #start_offline');
+const BeatsDegaraButton = document.querySelector('#beats_degara #start_offline');
+const Ebur128Button = document.querySelector('#ebur128 #start_offline');
+const PYINButton = document.querySelector('#pyin #start_offline');
+const YINButton = document.querySelector('#yin #start_offline');
+const YINFFTButton = document.querySelector('#yin_fft #start_offline');
 
 //Custom Variables
 let essentia;
@@ -62,6 +84,17 @@ MelBandsButton.addEventListener('click', () => mel_bands(essentia, Meyda, audioU
 LoudnessButton.addEventListener('click', () => loudness(essentia, Meyda, audioURL));
 PerceptualSpreadButton.addEventListener('click', () => perceptual_spread(essentia, Meyda, audioURL));
 AllTimeFreqButton.addEventListener('click', () => all_time_freq(essentia, Meyda, audioURL));
+HPCPButton.addEventListener('click', () => hpcp(essentia, Meyda, audioURL));
+KeyButton.addEventListener('click', () => key(essentia, Meyda, audioURL));
+TuningFreqButton.addEventListener('click', () => tuning_frequency(essentia, Meyda, audioURL));
+OnsetButton.addEventListener('click', () => onset(essentia, Meyda, audioURL));
+SuperFluxButton.addEventListener('click', () => super_flux(essentia, Meyda, audioURL));
+BeatsZapataButton.addEventListener('click', () => beats_zapata(essentia, Meyda, audioURL));
+BeatsDegaraButton.addEventListener('click', () => beats_degara(essentia, Meyda, audioURL));
+Ebur128Button.addEventListener('click', () => ebur128(essentia, Meyda, audioURL));
+PYINButton.addEventListener('click', () => pyin(essentia, Meyda, audioURL));
+YINButton.addEventListener('click', () => yin(essentia, Meyda, audioURL));
+YINFFTButton.addEventListener('click', () => yin_fft(essentia, Meyda, audioURL));
 
 function loadEssentia() {
     EssentiaModule().then( (EssentiaWasmModule) => {

@@ -8,8 +8,8 @@ export default function rms(essentia, Meyda, audioURL) {
     const audioContext = new AudioContext();
     const FRAME_SIZE = 2048;
     const HOP_SIZE = 1024;
-    const RMSButton = document.getElementById('#rms #start_offline');
-    const p = document.getElementById('#rms #results');
+    const RMSButton = document.querySelector('#rms #start_offline');
+    const p = document.querySelector('#rms #results');
     const down_elem = document.querySelector('#rms #download_results');
     const meyda_table = document.querySelector('#rms #meyda_results #table');
     const meyda_plot = document.querySelector('#rms #meyda_results #plot');
@@ -110,7 +110,7 @@ export default function rms(essentia, Meyda, audioURL) {
                     "hz": this[1].hz
                 }
             }
-            downloadJson(resultsObj, "energy.json", down_elem);
+            downloadJson(resultsObj, "rms.json", down_elem);
         })
         // run async
         .run({ 'async': true });       
