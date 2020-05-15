@@ -3,9 +3,9 @@ import downloadJson from '../../utils/downloadJson';
 import violinDistributionPlot from '../../utils/violinDistributionPlot';
 import {showResultsTable} from '../../utils/showResultsTable';
 
-export default function spectralCentroid(essentia, Meyda, audioURL) {
+export default function spectralCentroid(essentia, Meyda, audioURL, audioContext) {
 
-    const audioContext = new AudioContext();
+    // const audioContext = new AudioContext();
     const FRAME_SIZE = 2048;
     const HOP_SIZE = 1024;
     const SpectralCentroidButton = document.querySelector('#spectral_centroid #start_offline');

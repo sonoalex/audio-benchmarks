@@ -64,37 +64,53 @@ let essentia;
 loadEssentia();
 
 let audioURL = '/audio/mozart_c_major_30sec.wav';
+var AudioContext = window.AudioContext // Default
+|| window.webkitAudioContext // Safari and old versions of Chrome
+|| false;
+
+if (AudioContext) {
+    // Do whatever you want using the Web Audio API
+    var ctx = new AudioContext;
+    // ...
+} else {
+    // Web Audio API is not supported
+    // Alert the user
+    alert("Sorry, but the Web Audio API is not supported by your browser. Please, consider upgrading to the latest version or downloading Google Chrome or Mozilla Firefox");
+}
 
 /**
  * START HERE WITH ALL SUITES
  */
 
-EnergyButton.addEventListener('click', () => energy(essentia, Meyda, audioURL));
-RMSButton.addEventListener('click', () => rms(essentia, Meyda, audioURL));
-ZCRButton.addEventListener('click', () => zcr(essentia, Meyda, audioURL));
-AmplitudeSpectralButton.addEventListener('click', () => amplitude_spectrum(essentia, Meyda, audioURL));
-PowerSpectrumButton.addEventListener('click', () => power_spectrum(essentia, Meyda, audioURL));
-SpectralCentroidButton.addEventListener('click', () => spectral_centroid(essentia, Meyda, audioURL));
-SpectralFlatnessButton.addEventListener('click', () => spectral_flatness(essentia, Meyda, audioURL));
-SpectralFluxButton.addEventListener('click', () =>  spectral_flux(essentia, Meyda, audioURL));
-SpecRolloffButton.addEventListener('click', () => spectral_rolloff(essentia, Meyda, audioURL));
-DistShapeButton.addEventListener('click', () => distribution_shape(essentia, Meyda, audioURL));
-MFCCButton.addEventListener('click', () => mfcc(essentia, Meyda, audioURL));
-MelBandsButton.addEventListener('click', () => mel_bands(essentia, Meyda, audioURL));
-LoudnessButton.addEventListener('click', () => loudness(essentia, Meyda, audioURL));
-PerceptualSpreadButton.addEventListener('click', () => perceptual_spread(essentia, Meyda, audioURL));
-AllTimeFreqButton.addEventListener('click', () => all_time_freq(essentia, Meyda, audioURL));
-HPCPButton.addEventListener('click', () => hpcp(essentia, Meyda, audioURL));
-KeyButton.addEventListener('click', () => key(essentia, Meyda, audioURL));
-TuningFreqButton.addEventListener('click', () => tuning_frequency(essentia, Meyda, audioURL));
-OnsetButton.addEventListener('click', () => onset(essentia, Meyda, audioURL));
-SuperFluxButton.addEventListener('click', () => super_flux(essentia, Meyda, audioURL));
-BeatsZapataButton.addEventListener('click', () => beats_zapata(essentia, Meyda, audioURL));
-BeatsDegaraButton.addEventListener('click', () => beats_degara(essentia, Meyda, audioURL));
-Ebur128Button.addEventListener('click', () => ebur128(essentia, Meyda, audioURL));
-PYINButton.addEventListener('click', () => pyin(essentia, Meyda, audioURL));
-YINButton.addEventListener('click', () => yin(essentia, Meyda, audioURL));
-YINFFTButton.addEventListener('click', () => yin_fft(essentia, Meyda, audioURL));
+EnergyButton.addEventListener('click', () => energy(essentia, Meyda, audioURL, ctx));
+RMSButton.addEventListener('click', () => rms(essentia, Meyda, audioURL, ctx));
+ZCRButton.addEventListener('click', () => zcr(essentia, Meyda, audioURL, ctx));
+AmplitudeSpectralButton.addEventListener('click', () => amplitude_spectrum(essentia, Meyda, audioURL, ctx));
+PowerSpectrumButton.addEventListener('click', () => power_spectrum(essentia, Meyda, audioURL, ctx));
+SpectralCentroidButton.addEventListener('click', () => spectral_centroid(essentia, Meyda, audioURL, ctx));
+SpectralFlatnessButton.addEventListener('click', () => spectral_flatness(essentia, Meyda, audioURL, ctx));
+SpectralFluxButton.addEventListener('click', () =>  spectral_flux(essentia, Meyda, audioURL, ctx));
+SpecRolloffButton.addEventListener('click', () => spectral_rolloff(essentia, Meyda, audioURL, ctx));
+DistShapeButton.addEventListener('click', () => distribution_shape(essentia, Meyda, audioURL, ctx));
+MFCCButton.addEventListener('click', () => mfcc(essentia, Meyda, audioURL, ctx));
+MelBandsButton.addEventListener('click', () => mel_bands(essentia, Meyda, audioURL, ctx));
+LoudnessButton.addEventListener('click', () => loudness(essentia, Meyda, audioURL, ctx));
+PerceptualSpreadButton.addEventListener('click', () => perceptual_spread(essentia, Meyda, audioURL, ctx));
+AllTimeFreqButton.addEventListener('click', () => all_time_freq(essentia, Meyda, audioURL, ctx));
+HPCPButton.addEventListener('click', () => hpcp(essentia, Meyda, audioURL, ctx));
+KeyButton.addEventListener('click', () => key(essentia, Meyda, audioURL, ctx));
+TuningFreqButton.addEventListener('click', () => tuning_frequency(essentia, Meyda, audioURL, ctx));
+OnsetButton.addEventListener('click', () => onset(essentia, Meyda, audioURL, ctx));
+SuperFluxButton.addEventListener('click', () => super_flux(essentia, Meyda, audioURL, ctx));
+BeatsZapataButton.addEventListener('click', () => beats_zapata(essentia, Meyda, audioURL, ctx));
+BeatsDegaraButton.addEventListener('click', () => beats_degara(essentia, Meyda, audioURL, ctx));
+Ebur128Button.addEventListener('click', () => ebur128(essentia, Meyda, audioURL, ctx));
+PYINButton.addEventListener('click', () => pyin(essentia, Meyda, audioURL, ctx));
+YINButton.addEventListener('click', () => yin(essentia, Meyda, audioURL, ctx));
+YINFFTButton.addEventListener('click', () => yin_fft(essentia, Meyda, audioURL, ctx));
+
+
+
 
 function loadEssentia() {
     EssentiaModule().then( (EssentiaWasmModule) => {
