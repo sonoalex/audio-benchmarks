@@ -27,9 +27,12 @@ import pyin from './Benchmarks/offline/suite_compute_pyin';
 import yin from './Benchmarks/offline/suite_compute_yin';
 import yin_fft from './Benchmarks/offline/suite_compute_yin_fft';
 
+import generateBencharkSet from './utils/generateBencharkSet';
+
 // Import CSS
 import "../../src/css/styles.css";
 
+generateBencharkSet();
 
 // DOM ELEMENTS
 const EnergyButton = document.querySelector('#energy #start_offline');
